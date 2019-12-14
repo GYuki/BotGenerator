@@ -7,6 +7,7 @@ namespace BotService.API.Model
         public int Id { get; set; }
         public string Token { get; set; }
         public User Owner { get; set; }
+        public int OwnerId { get; set; }
 
         public ICollection<Command> Commands { get; set; }
 

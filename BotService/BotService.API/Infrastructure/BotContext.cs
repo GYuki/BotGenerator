@@ -15,6 +15,7 @@ namespace BotService.API.Infrastructure
         {
             builder.ApplyConfiguration(new UserEntityTypeConfiguration());
             builder.ApplyConfiguration(new CommandEntityTypeConfiguration());
+            builder.ApplyConfiguration(new BotEntityTypeConfiguration());
         }
     }
 }
