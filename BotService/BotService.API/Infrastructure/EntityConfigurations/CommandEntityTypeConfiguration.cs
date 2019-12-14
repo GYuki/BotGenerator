@@ -25,7 +25,7 @@ namespace BotService.API.Infrastructure.EntityConfigurations
                 .HasMaxLength(200);
             
             builder.HasOne(c => c.Bot)
-                .WithMany()
+                .WithMany(b => b.Commands)
                 .HasForeignKey(c => c.BotId);
 
             builder.HasIndex(c => new { c.BotId, c.Request });
