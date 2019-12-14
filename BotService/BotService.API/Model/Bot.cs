@@ -10,6 +10,7 @@ namespace BotService.API.Model
         public int OwnerId { get; set; }
 
         public ICollection<Command> Commands { get; set; }
+        public virtual ICollection<Subscribe> Subscribes { get; set; }
 
     }
 }
