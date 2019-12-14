@@ -14,6 +14,7 @@ namespace BotService.API.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new UserEntityTypeConfiguration());
+            builder.ApplyConfiguration(new CommandEntityTypeConfiguration());
         }
     }
 }
