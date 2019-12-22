@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using Microsoft.EntityFrameworkCore;
+using BotService.API.Infrastructure;
+
 namespace BotService.API
 {
     public class Startup
@@ -25,6 +28,8 @@ namespace BotService.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BotContext>(opt =>
+                opt.UseInMemoryDatabase("Bots"));
             services.AddControllers();
         }
 
@@ -44,7 +49,7 @@ namespace BotService.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

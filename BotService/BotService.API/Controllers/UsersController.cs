@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace BotService.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : Controller
     {
         private readonly BotContext _botContext;
         
         
-        public UserController(BotContext context)
+        public UsersController(BotContext context)
         {
             _botContext = context ?? throw new ArgumentException(nameof(context));
 
@@ -23,7 +23,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpGet]
-        [Route("users/{id:int}")]
+        [Route("{id:int}")]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.OK)]
@@ -43,7 +43,7 @@ namespace BotService.API.Controllers
         }
 
         //POST api/v1/[controller]/users
-        [Route("users")]
+        // [Route("users")]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult> CreateUserAsync([FromBody]User user)
