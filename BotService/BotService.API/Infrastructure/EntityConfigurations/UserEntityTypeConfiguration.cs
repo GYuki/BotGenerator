@@ -16,6 +16,8 @@ namespace BotService.API.Infrastructure.EntityConfigurations
                 .UseHiLo("user_hilo")
                 .IsRequired();
             
+            builder.HasIndex(u => u.SenderId)
+                .IsUnique(true);
             builder.Property(u => u.SenderId)
                 .IsRequired()
                 .HasMaxLength(100);
