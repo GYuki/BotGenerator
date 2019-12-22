@@ -6,6 +6,9 @@ namespace BotService.API.Infrastructure
     using EntityConfigurations;
     public class BotContext : DbContext
     {
+        public BotContext(DbContextOptions<BotContext> options) : base(options)
+        {
+        }
         public DbSet<Bot> Bots { get; set; }
         public DbSet<Command> Commands { get; set; }
         public DbSet<Subscribe> Subscribes { get; set; }
