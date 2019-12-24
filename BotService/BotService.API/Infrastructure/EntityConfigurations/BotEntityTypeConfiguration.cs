@@ -15,8 +15,17 @@ namespace BotService.API.Infrastructure.EntityConfigurations
             builder.Property(b => b.Id)
                 .UseHiLo("bot_hilo")
                 .IsRequired();
+            
+            builder.HasIndex(b => b.Token)
+                .IsUnique(true);
+            builder.HasIndex(b => b.Name)
+                .IsUnique(true);
 
             builder.Property(b => b.Token)
+                .IsRequired()
+                .HasMaxLength(100);
+            
+            builder.Property(b => b.Name)
                 .IsRequired()
                 .HasMaxLength(100);
             
