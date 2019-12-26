@@ -11,15 +11,17 @@ namespace BotService.API.Infrastructure.EntityConfigurations
         {
             builder.ToTable("Subscribe");
 
-            builder.HasKey(s => new { s.BotId, s.ListenerId });
+            builder.HasKey(s => s.Id);
+            builder.Property(s => s.Id)
+                   .UseHiLo("subscribe_hilo")
+                   .IsRequired();
 
-            builder.HasOne(subscribe => subscribe.Listener)
-                .WithMany(user => user.Subscribes)
-                .HasForeignKey(subscribe => subscribe.ListenerId);
-            
-            builder.HasOne(subscribe => subscribe.Bot)
-                .WithMany(bot => bot.Subscribes)
-                .HasForeignKey(subscribe => subscribe.BotId);
+            builder.HasIndex(s => new { s.BotId, s.ChatId })
+                   .IsUnique(true);
+
+            builder.Property(u => u.ChatId)
+                .IsRequired()
+                .HasMaxLength(100);
         }
     }
 }
