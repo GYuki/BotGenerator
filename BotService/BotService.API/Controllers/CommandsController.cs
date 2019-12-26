@@ -51,7 +51,7 @@ namespace BotService.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Command), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Command>> UpdateCommandResponse([FromBody] UpdateCommandRequest request)
+        public async Task<ActionResult<Command>> UpdateCommandResponseAsync([FromBody] UpdateCommandRequest request)
         {
             if (request.HasNullField)
                 return BadRequest();
