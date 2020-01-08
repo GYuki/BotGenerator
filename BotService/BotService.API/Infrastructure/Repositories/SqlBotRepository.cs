@@ -15,9 +15,9 @@ namespace BotService.API.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Bot> GetBotAsync(string botName)
+        public async Task<Bot> GetBotAsync(int botId)
         {
-            var bot = await _context.Bots.SingleOrDefaultAsync(b => b.Name == botName);
+            var bot = await _context.Bots.SingleOrDefaultAsync(b => b.Id == botId);
 
             return bot;
         }
@@ -29,9 +29,9 @@ namespace BotService.API.Infrastructure.Repositories
             return bots;
         }
 
-        public async Task<bool> DeleteBotAsync(string botName)
+        public async Task<bool> DeleteBotAsync(int botId)
         {
-            var bot = await GetBotAsync(botName);
+            var bot = await GetBotAsync(botId);
 
             if (bot is null)
                 return false;
