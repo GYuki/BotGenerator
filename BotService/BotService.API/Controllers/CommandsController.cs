@@ -14,11 +14,11 @@ namespace BotService.API.Controllers
     [ApiController]
     public class CommandsController : Controller
     {
-        private readonly BotContext _botContext;
+        private readonly ICommandRepository _commandRepository;
 
-        public CommandsController(BotContext context)
+        public CommandsController(ICommandRepository commandRepository)
         {
-            _botContext = context ?? throw new ArgumentException(nameof(context));
+            _commandRepository = commandRepository;
         }
 
         [HttpGet]
@@ -31,7 +31,7 @@ namespace BotService.API.Controllers
             if (id <= 0)
                 return BadRequest();
             
-            var command = await _botContext.Commands.SingleOrDefaultAsync(c => c.Id == id);
+            var command = await _commandRepository.GetCommandAsync(id);
 
             if (command != null)
                 return command;
@@ -40,55 +40,41 @@ namespace BotService.API.Controllers
         }
 
         [HttpGet]
-        [Route("byname/{name}")]
+        [Route("ofbot/{id}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<List<Command>>> GetCommandsByBotNameAsync(string name)
+        public async Task<ActionResult<List<Command>>> GetCommandsByBotNameAsync(int id)
         {
-            return await _botContext.Commands.Where(c => c.Bot.Name == name).ToListAsync();
+            return await _commandRepository.GetBotCommandsAsync(id);
         }
 
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Command), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Command>> UpdateCommandResponseAsync([FromBody] UpdateCommandRequest request)
+        public async Task<ActionResult<Command>> UpdateCommandResponseAsync([FromBody] Command _command)
         {
-            if (request.HasNullField)
+            if (_command is null)
                 return BadRequest();
             
-            var command = await _botContext
-                               .Commands
-                               .SingleOrDefaultAsync(b => b.Request == request.Request
-                               && b.Bot.Name == request.BotName);
-            if (command is null)
-                return NotFound();
-            
-            command.Response = request.Response;
+            var command = await _commandRepository.UpdateCommandResponseAsync(_command);
 
-            await _botContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(CommandByIdAsync), new { id = command.Id }, null);
+            return Ok(command);
         }
 
         [HttpDelete]
-        [Route("{commandname}/bot/{botname}")]
+        [Route("{commandname}/ofbot/{botname}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> DeleteCommandOfBotAsync(string commandName, string botName)
+        public async Task<ActionResult> DeleteCommandOfBotAsync(string commandName, int botId)
         {
-            if (string.IsNullOrEmpty(commandName) || string.IsNullOrEmpty(botName))
+            if (string.IsNullOrEmpty(commandName) || botId <= 0)
                 return BadRequest();
             
-            var commandToDelete = await _botContext
-                                            .Commands
-                                            .SingleOrDefaultAsync(c => c.Bot.Name == botName 
-                                            && c.Request == commandName);
-            if (commandToDelete is null)
+            var deleteResult = await _commandRepository.DeleteCommandAsync(commandName, botId);
+
+            if (!deleteResult)
                 return NotFound();
-            
-            _botContext.Remove(commandToDelete);
-            await _botContext.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -96,28 +82,14 @@ namespace BotService.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<ActionResult> CreateCommandAsync([FromBody]CreateCommandRequest request)
+        public async Task<ActionResult> CreateCommandAsync([FromBody]Command command)
         {
-            if (string.IsNullOrEmpty(request.BotName))
+            if (command is null)
                 return BadRequest();
             
-            var bot = await _botContext.Bots.Where(b => b.Name == request.BotName).FirstOrDefaultAsync();
+            await _commandRepository.CreateCommandAsync(command);
 
-            if (bot is null)
-                return StatusCode(500);
-            
-            var command = new Command
-            {
-                Bot = bot,
-                Request = request.Request,
-                Response = request.Response
-            };
-
-            _botContext.Add(command);
-
-            await _botContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(CommandByIdAsync), new { id = command.Id}, null);
+            return Ok();
         }
     }
 }
