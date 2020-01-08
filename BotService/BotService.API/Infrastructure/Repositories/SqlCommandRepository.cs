@@ -16,6 +16,13 @@ namespace BotService.API.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Command> GetCommandAsync(int id)
+        {
+            var command = await _context.Commands.SingleOrDefaultAsync(c => c.Id == id);
+
+            return command;
+        }
+
         public async Task<List<Command>> GetBotCommandsAsync(int botId)
         {
             var commands = await _context.Commands.Where(c => c.BotId == botId).ToListAsync();
