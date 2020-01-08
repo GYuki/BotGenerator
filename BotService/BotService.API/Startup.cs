@@ -34,6 +34,7 @@ namespace BotService.API
                 opt.UseInMemoryDatabase("Bots"));
             
             services.AddTransient<IUserRepository, SqlUserRepository>();
+            services.AddTransient<IBotRepository, SqlBotRepository>();
             services.AddControllers();
         }
 

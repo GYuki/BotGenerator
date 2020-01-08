@@ -14,11 +14,11 @@ namespace BotService.API.Controllers
     [ApiController]
     public class BotsController : Controller
     {
-        private readonly BotContext _botcontext;
+        private readonly IBotRepository _botRepository;
 
-        public BotsController(BotContext context)
+        public BotsController(IBotRepository botRepository)
         {
-            _botcontext = context ?? throw new ArgumentException(nameof(context));
+            _botRepository = botRepository;
         }
 
         [HttpGet]
@@ -31,7 +31,7 @@ namespace BotService.API.Controllers
             if (id <= 0)
                 return BadRequest();
             
-            var bot = await _botcontext.Bots.SingleOrDefaultAsync(b => b.Id == id);
+            var bot = await _botRepository.GetBotAsync(id);
 
             if (bot != null)
                 return bot;
@@ -42,25 +42,21 @@ namespace BotService.API.Controllers
         [HttpGet]
         [Route("ofowner/{ownerid}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(string ownerId)
+        public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(int ownerId)
         {
-            return await _botcontext.Bots.Where(b => b.Owner.SenderId == ownerId).ToListAsync();
+            return await _botRepository.GetBotsOfOwnerAsync(ownerId);
         }
 
         [HttpDelete]
-        [Route("{botname}")]
+        [Route("{botId}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult> DeleteBotAsync(string name)
+        public async Task<ActionResult> DeleteBotAsync(int botId)
         {
-            var bot = await _botcontext.Bots.Where(b => b.Name == name).FirstOrDefaultAsync();
+            var deleteResult = await _botRepository.DeleteBotAsync(botId);
 
-            if (bot is null)
+            if (!deleteResult)
                 return NotFound();
-            
-            _botcontext.Bots.Remove(bot);
-
-            await _botcontext.SaveChangesAsync();
 
             return NoContent();
         }
@@ -68,29 +64,14 @@ namespace BotService.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<ActionResult> CreateBotBySenderIdAsync([FromBody]CreateBotRequest createBotRequest)
+        public async Task<ActionResult> CreateBotBySenderIdAsync([FromBody]Bot bot)
         {
-            if (string.IsNullOrEmpty(createBotRequest.OwnerId))
+            if (bot is null)
                 return BadRequest();
 
-            var user = await _botcontext.Users.Where(u => u.SenderId == createBotRequest.OwnerId).FirstOrDefaultAsync();
+           await _botRepository.CreateBotAsync(bot);
 
-            if (user is null)
-                return StatusCode(500);
-
-            var bot = new Bot
-            {
-                Owner = user,
-                Token = createBotRequest.Token,
-                Name = createBotRequest.Name
-            };
-
-            _botcontext.Add(bot);
-
-            await _botcontext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(BotByIdAsync), new { id = bot.Id }, null);
+            return Ok();
         }
     }
 }
