@@ -22,7 +22,7 @@ namespace BotService.API.Infrastructure.Repositories
             return bot;
         }
 
-        public async Task<List<Bot>> GetBotsOfOwner(int ownerId)
+        public async Task<List<Bot>> GetBotsOfOwnerAsync(int ownerId)
         {
             var bots = await _context.Bots.Where(b => b.OwnerId == ownerId).ToListAsync();
 
@@ -43,16 +43,11 @@ namespace BotService.API.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> CreateBotAsync(Bot _bot)
+        public async Task CreateBotAsync(Bot _bot)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == _bot.OwnerId);
-
-            if (user is null)
-                return false;
-            
             var bot = new Bot
             {
-                Owner = user,
+                OwnerId = _bot.OwnerId,
                 Token = _bot.Token,
                 Name = _bot.Name
             };
@@ -60,8 +55,6 @@ namespace BotService.API.Infrastructure.Repositories
             _context.Bots.Add(bot);
 
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }
