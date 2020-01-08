@@ -40,7 +40,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpGet]
-        [Route("byname/{name:string}")]
+        [Route("byname/{name}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<Command>>> GetCommandsByBotNameAsync(string name)
         {
@@ -71,7 +71,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{commandname:string}/bot/{botname:string}")]
+        [Route("{commandname}/bot/{botname}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

@@ -40,7 +40,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpGet]
-        [Route("subscribers/{bot:string}")]
+        [Route("subscribers/{bot}")]
         [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<string>>> GetSubscribersAsync(string botName)
         {
@@ -51,7 +51,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{botid:int}/{chatid:string}")]
+        [Route("{botid:int}/{chatid}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> DeleteSubscribeAsync(int botId, string chatId)
