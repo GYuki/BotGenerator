@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 
 using Microsoft.EntityFrameworkCore;
 using BotService.API.Infrastructure;
+using BotService.API.Infrastructure.Repositories;
+using BotService.API.Model;
 
 namespace BotService.API
 {
@@ -30,6 +32,8 @@ namespace BotService.API
         {
             services.AddDbContext<BotContext>(opt =>
                 opt.UseInMemoryDatabase("Bots"));
+            
+            services.AddTransient<IUserRepository, SqlUserRepository>();
             services.AddControllers();
         }
 

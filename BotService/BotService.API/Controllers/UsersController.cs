@@ -12,14 +12,12 @@ namespace BotService.API.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        private readonly BotContext _botContext;
+        private readonly IUserRepository _userRepository;
         
         
-        public UsersController(BotContext context)
+        public UsersController(IUserRepository userRepository)
         {
-            _botContext = context ?? throw new ArgumentException(nameof(context));
-
-            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -34,7 +32,7 @@ namespace BotService.API.Controllers
                 return BadRequest();
             }
 
-            var user = await _botContext.Users.SingleOrDefaultAsync(u => u.Id == id);
+            var user = await _userRepository.GetUserAsync(id);
 
             if (user != null)
                 return user;
@@ -46,18 +44,15 @@ namespace BotService.API.Controllers
         // [Route("users")]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> CreateUserAsync([FromBody]User user)
         {
-            var _user = new User
-            {
-                SenderId = user.SenderId
-            };
+            if (user is null)
+                return BadRequest();
+            
+            await _userRepository.CreateUserAsync(user);
 
-            _botContext.Users.Add(_user);
-
-            await _botContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(UserByIdAsync), new { id = _user.Id }, null);
+            return Ok();
         }
     }
 }
