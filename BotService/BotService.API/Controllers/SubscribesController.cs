@@ -14,82 +14,50 @@ namespace BotService.API.Controllers
     [ApiController]
     public class SubscribesController : Controller
     {
-        private readonly BotContext _botContext;
+        private readonly ISubscribeRepository _subscribeRepository;
 
-        public SubscribesController(BotContext context)
+        public SubscribesController(ISubscribeRepository subscribeRepository)
         {
-            _botContext = context ?? throw new ArgumentException(nameof(context));
-        }
-
-        [HttpGet]
-        [Route("{id:int}")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(Subscribe), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Subscribe>> SubscribeByIdAsync(int id)
-        {
-            if (id <= 0)
-                return NotFound();
-            
-            var subscribe = await _botContext.Subscribes.SingleOrDefaultAsync(s => s.Id == id);
-
-            if (subscribe != null)
-                return subscribe;
-            
-            return NotFound();
+            _subscribeRepository = subscribeRepository;
         }
 
         [HttpGet]
         [Route("subscribers/{bot}")]
         [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<List<string>>> GetSubscribersAsync(string botName)
+        public async Task<ActionResult<List<string>>> GetSubscribersAsync(int botId)
         {
-            return await _botContext.Subscribes
-                        .Where(s => s.Bot.Name == botName)
-                        .Select(s => s.ChatId)
-                        .ToListAsync();
+            return await _subscribeRepository.GetSubscribersAsync(botId);
         }
 
         [HttpDelete]
-        [Route("{botid:int}/{chatid}")]
+        [Route("{botname:int}/{chatid}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult> DeleteSubscribeAsync(int botId, string chatId)
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> DeleteSubscribeAsync(string botName, string chatId)
         {
-            var subscribe = await _botContext.Subscribes.SingleOrDefaultAsync(s => s.BotId == botId && s.ChatId == chatId);
-
-            if (subscribe is null)
-                return NotFound();
+            if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(chatId))
+                return BadRequest();
             
-            _botContext.Remove(subscribe);
-            await _botContext.SaveChangesAsync();
+            var deleteResult = await _subscribeRepository.DeleteSubscriptionAsync(botName, chatId);
+
+            if (!deleteResult)
+                return NotFound();
 
             return NoContent();
         }
-
         
-
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult> SubscribeAsync([FromBody]Subscribe subscribe)
         {
-            var bot = await _botContext.Bots.SingleOrDefaultAsync(b => b.Name == subscribe.Bot.Name);
-
-            if (bot is null)
-                return NotFound();
+            if (subscribe is null)
+                return BadRequest();
             
-            var _subscribe = new Subscribe
-            {
-                Bot = bot,
-                ChatId = subscribe.ChatId
-            };
+            await _subscribeRepository.SubscribeAsync(subscribe);
 
-            _botContext.Subscribes.Add(_subscribe);
-
-            await _botContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(SubscribeByIdAsync), new { id = subscribe.Id }, null);
+            return Ok();
         }
     }
 
