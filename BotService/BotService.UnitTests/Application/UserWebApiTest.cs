@@ -42,6 +42,83 @@ namespace UnitTest.BotService.Application
             Assert.AreEqual((((ObjectResult)actionResult.Result).Value as User).SenderId, fakeSenderId);
         }
 
+        [Test]
+        public async Task Post_User_Success()
+        {
+            // Arrange
+            var fakeUserId = 1;
+            var fakeSenderId = "1";
+            var fakeUser = GetUserFake(fakeUserId, fakeSenderId);
+
+            _userRepositoryMock.Setup(x => x.CreateUserAsync(It.IsAny<User>()));
+            
+            // Act
+            var userController = new UsersController(
+                _userRepositoryMock.Object
+            );
+
+            var actionResult = await userController.CreateUserAsync(fakeUser);
+            
+            // Assert
+            Assert.AreEqual((actionResult as OkResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
+        }
+
+        [Test]
+        public async Task Get_Nonexistent_User()
+        {
+            // Arrange
+            var fakeUserId = 2;
+
+            _userRepositoryMock.Setup(x => x.GetUserAsync(It.IsAny<int>()))
+                .Returns(Task.FromResult((User)null));
+            
+            // Act
+            var userController = new UsersController(
+                _userRepositoryMock.Object
+            );
+
+            var actionResult = (await userController.UserByIdAsync(fakeUserId));
+            
+            // Asssert
+            Assert.AreEqual((actionResult.Result as NotFoundResult).StatusCode, (int)System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Test]
+        public async Task Get_User_with_Zero_Id_Should_Return_Bad_Request()
+        {
+            // Arrange
+            var fakeUserId = 0;
+
+            _userRepositoryMock.Setup(x => x.GetUserAsync(It.IsAny<int>()))
+                .Returns(Task.FromResult((User)null));
+            
+            // Act
+            var userController = new UsersController(
+                _userRepositoryMock.Object
+            );
+        
+            var actionResult = (await userController.UserByIdAsync(fakeUserId)).Result as BadRequestResult;
+
+            // Assert
+            Assert.NotNull(actionResult);
+        }
+
+        [Test]
+        public async Task Null_User_Creataion_Should_Return_Bad_Request()
+        {
+            _userRepositoryMock.Setup(x => x.CreateUserAsync(It.IsAny<User>()));
+            
+            // Act
+            var userController = new UsersController(
+                _userRepositoryMock.Object
+            );
+
+            var actionResult = await userController.CreateUserAsync(null) as BadRequestResult;
+            
+            // Assert
+            Assert.NotNull(actionResult);
+        }
+
         private User GetUserFake(int id, string senderId)
         {
             return new User
