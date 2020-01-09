@@ -35,7 +35,7 @@ namespace BotService.API.Controllers
             var user = await _userRepository.GetUserAsync(id);
 
             if (user != null)
-                return user;
+                return Ok(user);
             
             return NotFound();
         }
