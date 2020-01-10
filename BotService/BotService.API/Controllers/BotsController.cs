@@ -42,8 +42,12 @@ namespace BotService.API.Controllers
         [HttpGet]
         [Route("ofowner/{ownerid}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(int ownerId)
         {
+            if (ownerId <= 0)
+                return BadRequest();
+
             var result = await _botRepository.GetBotsOfOwnerAsync(ownerId);
             return Ok(result);
         }
@@ -52,8 +56,12 @@ namespace BotService.API.Controllers
         [Route("{botId}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> DeleteBotAsync(int botId)
         {
+            if (botId <= 0)
+                return BadRequest();
+
             var deleteResult = await _botRepository.DeleteBotAsync(botId);
 
             if (!deleteResult)
