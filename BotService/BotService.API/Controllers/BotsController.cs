@@ -44,7 +44,8 @@ namespace BotService.API.Controllers
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(int ownerId)
         {
-            return await _botRepository.GetBotsOfOwnerAsync(ownerId);
+            var result = await _botRepository.GetBotsOfOwnerAsync(ownerId);
+            return Ok(result);
         }
 
         [HttpDelete]
@@ -64,7 +65,7 @@ namespace BotService.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> CreateBotBySenderIdAsync([FromBody]Bot bot)
+        public async Task<ActionResult> CreateBotAsync([FromBody]Bot bot)
         {
             if (bot is null)
                 return BadRequest();
