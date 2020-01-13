@@ -34,7 +34,7 @@ namespace BotService.API.Controllers
             var command = await _commandRepository.GetCommandAsync(id);
 
             if (command != null)
-                return command;
+                return Ok(command);
             
             return NotFound();
         }
