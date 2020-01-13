@@ -33,6 +33,9 @@ namespace BotService.API.Infrastructure.Repositories
         public async Task<Command> UpdateCommandResponseAsync(Command _command)
         {
             var command = await _context.Commands.SingleOrDefaultAsync(u => u.Id == _command.Id);
+            
+            if (command is null)
+                return command;
 
             command.Response = _command.Response;
             _context.Commands.Update(command);

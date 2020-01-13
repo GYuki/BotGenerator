@@ -54,6 +54,7 @@ namespace BotService.API.Controllers
 
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(Command), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Command>> UpdateCommandResponseAsync([FromBody] Command _command)
         {
@@ -61,6 +62,9 @@ namespace BotService.API.Controllers
                 return BadRequest();
             
             var command = await _commandRepository.UpdateCommandResponseAsync(_command);
+
+            if (command is null)
+                return NotFound();
 
             return Ok(command);
         }
