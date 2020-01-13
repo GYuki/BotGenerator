@@ -42,8 +42,12 @@ namespace BotService.API.Controllers
         [HttpGet]
         [Route("ofbot/{id}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<List<Command>>> GetCommandsByBotNameAsync(int id)
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<List<Command>>> GetCommandsByBotIdAsync(int id)
         {
+            if (id <= 0)
+                return BadRequest();
+
             var result = await _commandRepository.GetBotCommandsAsync(id);
             return Ok(result);
         }
