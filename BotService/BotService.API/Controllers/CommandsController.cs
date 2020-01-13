@@ -44,7 +44,8 @@ namespace BotService.API.Controllers
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<Command>>> GetCommandsByBotNameAsync(int id)
         {
-            return await _commandRepository.GetBotCommandsAsync(id);
+            var result = await _commandRepository.GetBotCommandsAsync(id);
+            return Ok(result);
         }
 
         [HttpPut]
