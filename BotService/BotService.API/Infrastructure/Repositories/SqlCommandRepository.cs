@@ -45,9 +45,9 @@ namespace BotService.API.Infrastructure.Repositories
             return command;
         }
 
-        public async Task<bool> DeleteCommandAsync(string commandName, int botId)
+        public async Task<bool> DeleteCommandAsync(int commandId)
         {
-            var command = await _context.Commands.SingleOrDefaultAsync(c => c.BotId == botId);
+            var command = await _context.Commands.SingleOrDefaultAsync(c => c.Id == commandId);
 
             if (command is null)
                 return false;

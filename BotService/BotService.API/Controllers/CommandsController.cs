@@ -70,16 +70,15 @@ namespace BotService.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{commandname}/ofbot/{botname}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> DeleteCommandOfBotAsync(string commandName, int botId)
+        public async Task<ActionResult> DeleteCommandOfBotAsync(int commandId)
         {
-            if (string.IsNullOrEmpty(commandName) || botId <= 0)
+            if (commandId <= 0)
                 return BadRequest();
             
-            var deleteResult = await _commandRepository.DeleteCommandAsync(commandName, botId);
+            var deleteResult = await _commandRepository.DeleteCommandAsync(commandId);
 
             if (!deleteResult)
                 return NotFound();
