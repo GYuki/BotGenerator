@@ -24,9 +24,13 @@ namespace BotService.API.Controllers
         [HttpGet]
         [Route("subscribers/{bot}")]
         [ProducesResponseType(typeof(List<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<List<string>>> GetSubscribersAsync(int botId)
         {
-            return await _subscribeRepository.GetSubscribersAsync(botId);
+            if (botId <= 0)
+                return BadRequest();
+            var result = await _subscribeRepository.GetSubscribersAsync(botId);
+            return Ok(result);
         }
 
         [HttpDelete]
