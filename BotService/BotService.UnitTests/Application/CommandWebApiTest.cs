@@ -329,7 +329,7 @@ namespace UnitTest.BotService.Application
             );
 
             var actionResult = await commandController.DeleteCommandOfBotAsync(fakeCommandId) as BadRequestResult;
-            var actionResultLess = await commandController.DeleteCommandOfBotAsync(fakeCommandId) as BadRequestResult;
+            var actionResultLess = await commandController.DeleteCommandOfBotAsync(fakeCommandIdLess) as BadRequestResult;
 
             // Assert
             Assert.NotNull(actionResult);
