@@ -2,7 +2,7 @@ namespace BotService.API.Infrastructure
 {
     using Model;
     using Microsoft.EntityFrameworkCore;
-    using MySql.Data.EntityFrameworkCore.Extensions;
+    using Pomelo.EntityFrameworkCore.MySql.Extensions;
     using EntityConfigurations;
     public class BotContext : DbContext
     {
