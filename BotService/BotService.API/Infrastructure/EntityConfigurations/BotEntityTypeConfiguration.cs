@@ -13,7 +13,6 @@ namespace BotService.API.Infrastructure.EntityConfigurations
 
             builder.HasKey(b => b.Id);
             builder.Property(b => b.Id)
-                .UseHiLo("bot_hilo")
                 .IsRequired();
             
             builder.HasIndex(b => b.Token)
