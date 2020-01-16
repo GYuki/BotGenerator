@@ -34,7 +34,7 @@ namespace BotService.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{botname:int}/{chatid}")]
+        [Route("{botname}/{chatid}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
