@@ -73,10 +73,16 @@ namespace BotService.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> CreateBotAsync([FromBody]Bot bot)
         {
             if (bot is null)
                 return BadRequest();
+            
+            var checkBot = await _botRepository.GetBotByTokenAsync(bot.Token);
+
+            if (checkBot != null)
+                return Conflict();
 
            await _botRepository.CreateBotAsync(bot);
 

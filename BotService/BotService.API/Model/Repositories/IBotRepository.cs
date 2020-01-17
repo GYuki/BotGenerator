@@ -6,6 +6,7 @@ namespace BotService.API.Model
     public interface IBotRepository
     {
         Task<Bot> GetBotAsync(int botId);
+        Task<Bot> GetBotByTokenAsync(string name);
         Task<List<Bot>> GetBotsOfOwnerAsync(int ownerId);
         Task<bool> DeleteBotAsync(int botId);
         Task CreateBotAsync(Bot bot);

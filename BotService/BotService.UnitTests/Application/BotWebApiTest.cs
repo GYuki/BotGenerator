@@ -53,6 +53,8 @@ namespace UnitTest.BotService.Application
             var fakeBot = GetBotFake(fakeBotId, fakeToken, fakeName);
 
             _botRepositoryMock.Setup(x => x.CreateBotAsync(It.IsAny<Bot>()));
+            _botRepositoryMock.Setup(x => x.GetBotByTokenAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult((Bot)null));
             // Act
             var botController = new BotsController(
                 _botRepositoryMock.Object
@@ -245,6 +247,28 @@ namespace UnitTest.BotService.Application
             var actionResult = await botController.CreateBotAsync(fakeBot) as BadRequestResult;
 
             // Assert
+            Assert.NotNull(actionResult);
+        }
+
+        public async Task Create_Existing_Bot_Should_Return_Conflict()
+        {
+            // Arrange
+            var fakeBotId = 1;
+            var fakeBotName = "name";
+            var fakeBotToken = "token";
+            var fakeBot = GetBotFake(fakeBotId, fakeBotToken, fakeBotName);
+
+            _botRepositoryMock.Setup(x => x.GetBotByTokenAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(fakeBot));
+
+            // Act
+            var botController = new BotsController(
+                _botRepositoryMock.Object
+            );
+
+            var actionResult = await botController.CreateBotAsync(fakeBot) as ConflictResult;
+
+            // Arrange
             Assert.NotNull(actionResult);
         }
 

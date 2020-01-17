@@ -24,6 +24,12 @@ namespace BotService.API.Infrastructure.Repositories
             return bot;
         }
 
+        public async Task<Bot> GetBotByTokenAsync(string botToken)
+        {
+            return await _context.Bots.SingleOrDefaultAsync(x => x.Token == botToken);
+
+        }
+
         public async Task<List<Bot>> GetBotsOfOwnerAsync(int ownerId)
         {
             var bots = await _context.Bots.Where(b => b.OwnerId == ownerId)
