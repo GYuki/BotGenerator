@@ -45,10 +45,16 @@ namespace BotService.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> CreateUserAsync([FromBody]User user)
         {
             if (user is null)
                 return BadRequest();
+            
+            var _user = await _userRepository.GetUserBySenderIdAsync(user.SenderId);
+
+            if (_user != null)
+                return Conflict();
             
             await _userRepository.CreateUserAsync(user);
 

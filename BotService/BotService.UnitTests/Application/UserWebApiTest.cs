@@ -51,16 +51,18 @@ namespace UnitTest.BotService.Application
             var fakeUser = GetUserFake(fakeUserId, fakeSenderId);
 
             _userRepositoryMock.Setup(x => x.CreateUserAsync(It.IsAny<User>()));
+            _userRepositoryMock.Setup(x => x.GetUserBySenderIdAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult((User)null));
             
             // Act
             var userController = new UsersController(
                 _userRepositoryMock.Object
             );
 
-            var actionResult = await userController.CreateUserAsync(fakeUser);
+            var actionResult = await userController.CreateUserAsync(fakeUser) as OkResult;
             
             // Assert
-            Assert.AreEqual((actionResult as OkResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
+            Assert.NotNull(actionResult);
         }
 
         [Test]
@@ -81,6 +83,28 @@ namespace UnitTest.BotService.Application
             
             // Asssert
             Assert.AreEqual((actionResult.Result as NotFoundResult).StatusCode, (int)System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Test]
+        public async Task Get_User_Who_Already_Exists()
+        {
+            // Arrange
+            var fakeId = 1;
+            var fakeSenderId = "123";
+            var fakeUser = GetUserFake(fakeId, fakeSenderId);
+
+            _userRepositoryMock.Setup(x => x.GetUserBySenderIdAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(fakeUser));
+            
+            // Act
+            var userController = new UsersController(
+                _userRepositoryMock.Object
+            );
+
+            var actionResult = await userController.CreateUserAsync(fakeUser) as ConflictResult;
+
+            // Assert
+            Assert.NotNull(actionResult);
         }
 
         [Test]

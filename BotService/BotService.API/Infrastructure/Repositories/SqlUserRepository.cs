@@ -21,6 +21,11 @@ namespace BotService.API.Infrastructure.Repositories
             return user;
         }
 
+        public async Task<User> GetUserBySenderIdAsync(string senderId)
+        {
+            return await _context.Users.SingleOrDefaultAsync(x => x.SenderId == senderId);
+        }
+
         public async Task CreateUserAsync(User _user)
         {
             var user = new User
