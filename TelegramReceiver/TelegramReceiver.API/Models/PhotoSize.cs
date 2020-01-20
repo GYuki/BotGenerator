@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 
 
-namespace TelegramReceiver.API.Model
+namespace TelegramReceiver.API.Models
 {
-    class PhotoSize
+    public class PhotoSize
     {
         [JsonProperty("file_id")]
         public string FileId { get; set; }

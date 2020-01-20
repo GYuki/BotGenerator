@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 
 
-namespace TelegramReceiver.API.Model
+namespace TelegramReceiver.API.Models
 {
-    class User
+    public class User
     {
         public int Id { get; set; }
 
@@ -17,7 +17,7 @@ namespace TelegramReceiver.API.Model
         public string LastName { get; set; }
 
         public string Username { get; set; }
-        
+
         [JsonProperty("language_code")]
         public string LanguageCode { get; set; }
     }
