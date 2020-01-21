@@ -23,7 +23,7 @@ namespace TelegramReceiver.API.Infrastructure.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(100);
             
-            builder.HasIndex(c => new { c.Token, c.ResponseId })
+            builder.HasIndex(c => new { c.Token, c.Request })
                 .IsUnique(true);
         }
     }
