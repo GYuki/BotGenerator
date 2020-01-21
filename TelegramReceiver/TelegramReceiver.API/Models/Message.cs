@@ -8,7 +8,6 @@ namespace TelegramReceiver.API.Models
     {
         [JsonProperty("message_id")]
         public int MessageId { get; set; }
-
         public User From { get; set; }
         public int Date { get; set; }
         public Chat Chat { get; set; }
@@ -22,10 +21,5 @@ namespace TelegramReceiver.API.Models
 
         [JsonProperty("caption_entities")]
         public ICollection<MessageEntity> CaptionEntities { get; set; }
-
-        public Audio Audio { get; set; }
-        public Document Document { get; set; }
-        public ICollection<PhotoSize> Photo { get; set; }
-        public Video Video { get; set; }
     }
 }
