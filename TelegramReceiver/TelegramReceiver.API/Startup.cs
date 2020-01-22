@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using TelegramReceiver.API.Infrastructure;
+using TelegramReceiver.API.Infrastructure.Repositories;
 
 namespace TelegramReceiver.API
 {
@@ -25,6 +28,10 @@ namespace TelegramReceiver.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<TelegramContext>(opt =>
+                opt.UseInMemoryDatabase("TelegramReceiver"));
+
+            services.AddTransient<ICommandRepository, SqlCommandRepository>();
             services.AddControllers();
         }
 
@@ -44,7 +51,7 @@ namespace TelegramReceiver.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
