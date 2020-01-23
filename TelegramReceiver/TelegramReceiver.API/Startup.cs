@@ -33,6 +33,7 @@ namespace TelegramReceiver.API
 
             services.AddTransient<ICommandRepository, SqlCommandRepository>();
             services.AddControllers();
+            services.AddMvc().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
