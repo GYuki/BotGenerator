@@ -1,24 +1,28 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 
 namespace TelegramReceiver.API.Models
 {
+    [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class User
     {
+        [JsonProperty(Required = Required.Always)]
         public int Id { get; set; }
 
-        [JsonProperty("is_bot")]
+        [JsonProperty(Required = Required.Always)]
         public bool IsBot { get; set; }
 
-        [JsonProperty("first_name")]
+        [JsonProperty(Required = Required.Always)]
         public string FirstName { get; set; }
 
-        [JsonProperty("last_name")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string LastName { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Username { get; set; }
 
-        [JsonProperty("language_code")]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string LanguageCode { get; set; }
     }
 }
