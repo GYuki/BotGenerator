@@ -18,12 +18,12 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
         public async Task<Command> GetCommandAsync(int id)
         {
             var command = await _context.Commands
-                .Select(c => new Command
-                {
-                    Id = c.Id,
-                    Request = c.Request,
-                    Response = c.Response
-                })
+                // .Select(c => new Command
+                // {
+                //     Id = c.Id,
+                //     Request = c.Request,
+                //     Response = c.Response
+                // })
                 .SingleOrDefaultAsync(c => c.Id == id);
 
             return command;
@@ -40,12 +40,12 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
         public async Task<List<Command>> GetCommandsByTokenAsync(string token)
         {
             var commands = await _context.Commands
-                .Select(c => new Command
-                {
-                    Id = c.Id,
-                    Request = c.Request,
-                    Response = c.Response
-                })
+                // .Select(c => new Command
+                // {
+                //     Id = c.Id,
+                //     Request = c.Request,
+                //     Response = c.Response
+                // })
                 .Where(c => c.Token == token)
                 .ToListAsync();
             
@@ -87,7 +87,8 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
             {
                 Request = _command.Request,
                 Token = _command.Token,
-                ResponseId = _command.ResponseId
+                Response = _command.Response,
+                Description = _command.Description
             };
 
             _context.Commands.Add(command);
