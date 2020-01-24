@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using TelegramReceiver.API.Infrastructure;
 using TelegramReceiver.API.Infrastructure.Repositories;
+using TelegramReceiver.API.Infrastructure.Services;
 
 namespace TelegramReceiver.API
 {
@@ -32,6 +33,7 @@ namespace TelegramReceiver.API
                 opt.UseInMemoryDatabase("TelegramReceiver"));
 
             services.AddTransient<ICommandRepository, SqlCommandRepository>();
+            services.AddTransient<ITelegramService, TelegramService>();
             services.AddControllers();
             services.AddMvc().AddNewtonsoftJson();
         }
