@@ -24,7 +24,6 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
                     Request = c.Request,
                     Response = c.Response
                 })
-                .Include(c => c.Response)
                 .SingleOrDefaultAsync(c => c.Id == id);
 
             return command;
@@ -33,7 +32,6 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
         public async Task<Command> GetCommandByTokenAndRequestAsync(string token, string request)
         {
             var command = await _context.Commands
-                .Include(c => c.Response)
                 .SingleOrDefaultAsync(c => c.Token == token && c.Request == request);
             
             return command;
