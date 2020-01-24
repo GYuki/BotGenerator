@@ -48,7 +48,6 @@ namespace TelegramReceiver.API.Infrastructure.Repositories
                     Request = c.Request,
                     Response = c.Response
                 })
-                .Include(c => c.Response)
                 .Where(c => c.Token == token)
                 .ToListAsync();
             
