@@ -35,8 +35,9 @@ namespace TelegramReceiver.API.Controllers
                 ChatId = update.Message.Chat.Id,
             };
             
-            if (update.Message.Entities != null &&
-                (update.Message.Entities.Length != 1 || update.Message.Entities[0].Type != "bot_command"))
+            if (update.Message.Entities == null ||
+                update.Message.Entities.Length != 1 || 
+                update.Message.Entities[0].Type != "bot_command")
             {
                 messageObject.Text = "ERROR. I can only handle single bot command.";
                 resultCode = Accepted();
@@ -48,12 +49,13 @@ namespace TelegramReceiver.API.Controllers
                     update.Message.Entities[0].Length
                 );
                 msg = await _telegramService.GenerateResponseTextAsync(command, botToken);
+
+                if (string.IsNullOrEmpty(msg))
+                    msg = "No commands found";
+
+                messageObject.Text = msg;
             }
             
-            if (string.IsNullOrEmpty(msg))
-                msg = "No commands found";
-
-            messageObject.Text = msg;
             await _telegramService.SendMessageToBotAsync(botToken, messageObject);
             return Ok();
         }
