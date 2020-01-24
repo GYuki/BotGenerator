@@ -59,7 +59,7 @@ namespace TelegramReceiver.API.Infrastructure.Services
                 var botCommands = await _commandRepository.GetCommandsByTokenAsync(botToken);
 
                 foreach (Command cmd in botCommands)
-                    sb.Append($"{cmd.Response} - {cmd.Description}\n");
+                    sb.Append($"{cmd.Request} - {cmd.Description}\n");
                 result = sb.ToString();
             }
             else
