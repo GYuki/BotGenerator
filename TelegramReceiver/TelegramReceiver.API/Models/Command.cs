@@ -6,6 +6,7 @@ namespace TelegramReceiver.API.Models
         public string Token { get; set; }
         public string Request { get; set; }
         public int ResponseId { get; set; }
-        public SendMessage Response { get; set; }
+        public string Description { get; set; }
+        public string Response { get; set; }
     }
 }
