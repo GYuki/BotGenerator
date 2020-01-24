@@ -23,9 +23,9 @@ namespace TelegramReceiver.API.Models
         public string Text { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public ICollection<MessageEntity> Entities { get; set; }
+        public MessageEntity[] Entities { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public ICollection<MessageEntity> CaptionEntities { get; set; }
+        public MessageEntity[] CaptionEntities { get; set; }
     }
 }
