@@ -65,7 +65,8 @@ namespace TelegramReceiver.API.Infrastructure.Services
             else
             {
                 var botCommand = await _commandRepository.GetCommandByTokenAndRequestAsync(botToken, command);
-                result = botCommand.Response;
+                if (botCommand != null)
+                    result = botCommand.Response;
             }
             return result;
         }
