@@ -7,7 +7,19 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/BotService/BotService.API/BotService.API.csproj",
+                "${workspaceFolder}/src/Services/BotService/BotService.API/BotService.API.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-telegram",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/Services/TelegramReceiver/TelegramReceiver.API/TelegramReceiver.API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +31,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/BotService/BotService.API/BotService.API.csproj",
+                "${workspaceFolder}/src/Services/BotService/BotService.API/BotService.API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +44,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/BotService/BotService.API/BotService.API.csproj",
+                "${workspaceFolder}/src/Services/BotService/BotService.API/BotService.API.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
