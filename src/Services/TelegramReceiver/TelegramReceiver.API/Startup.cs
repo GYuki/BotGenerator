@@ -46,6 +46,8 @@ namespace TelegramReceiver.API
             services.AddControllers();
             services.AddMvc().AddNewtonsoftJson();
 
+            services.AddApplicationInsightsTelemetry();
+
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();

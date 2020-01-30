@@ -39,7 +39,6 @@ namespace TelegramReceiver.API
                 })
                 // .UseFa
                 .UseStartup<Startup>()
-                .UseApplicationInsights()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(configuration)
                 .Build();
