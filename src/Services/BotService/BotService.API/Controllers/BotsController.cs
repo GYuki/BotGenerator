@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BotService.API.Model;
 using BotService.API.Infrastructure;
+using BotService.API.IntegrationEvents.Events;
+using BotService.API.IntegrationEvents;
 using System;
 using System.Net;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace BotService.API.Controllers
     public class BotsController : Controller
     {
         private readonly IBotRepository _botRepository;
+        private readonly IBotIntegrationEventService _botIntegrationEventService;
 
         public BotsController(IBotRepository botRepository)
         {
@@ -50,6 +53,35 @@ namespace BotService.API.Controllers
 
             var result = await _botRepository.GetBotsOfOwnerAsync(ownerId);
             return Ok(result);
+        }
+
+        [HttpPut]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        public async Task<ActionResult> UpdateBotTokenAsync([FromBody]Bot botToUpdate)
+        {
+            var currentBot = await _botRepository.GetBotAsync(botToUpdate.Id);
+
+            if (currentBot == null)
+                return NotFound();
+            
+            var oldToken = currentBot.Token;
+            var raiseTokenChangedEvent = oldToken != botToUpdate.Token;
+
+            currentBot = botToUpdate;
+
+            if (raiseTokenChangedEvent)
+            {
+                var tokenChangedEvent = new TokenChangedIntegrationEvent(currentBot.Token, oldToken);
+
+                await _botIntegrationEventService.SaveEventAndBotContextChangesAsync(tokenChangedEvent);
+
+                await _botIntegrationEventService.PublishThroughEventBusAsync(tokenChangedEvent);
+            }
+            else
+                await _botRepository.UpdateBotTokenAsync(currentBot);
+
+            return CreatedAtAction(nameof(BotByIdAsync), new { id = botToUpdate.Id }, null);
         }
 
         [HttpDelete]

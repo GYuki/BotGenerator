@@ -39,6 +39,13 @@ namespace BotService.API.Infrastructure.Repositories
             return bots;
         }
 
+        public async Task UpdateBotTokenAsync(Bot currentBot)
+        {
+            _context.Update(currentBot);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> DeleteBotAsync(int botId)
         {
             var bot = await GetBotAsync(botId);
