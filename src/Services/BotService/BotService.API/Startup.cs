@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Common;
@@ -31,20 +32,35 @@ namespace BotService.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment env)
         {
-            Configuration = configuration;
+            // Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables();
+        this.Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             // services.AddDbContext<BotContext>(opt =>
             //     opt.UseInMemoryDatabase("Bots"));
             services.AddDbContext<BotContext>(opt =>
-                opt.UseMySql(Configuration.GetConnectionString("local")));
+                opt.UseMySql(Configuration.GetConnectionString("localConnection")));
+            
+            services.AddDbContext<IntegrationEventLogContext>(opt => 
+            {
+                opt.UseMySql(Configuration.GetConnectionString("localConnection"), mySqlOptionsAction: sqlOpt =>
+                {
+                    sqlOpt.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    sqlOpt.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                });
+            });
             
             services.AddTransient<IUserRepository, SqlUserRepository>();
             services.AddTransient<IBotRepository, SqlBotRepository>();
@@ -57,11 +73,6 @@ namespace BotService.API
             
             AddEventIntegrationServices(services);
             RegisterEventBus(services);
-
-            var container = new ContainerBuilder();
-            container.Populate(services);
-
-            return new AutofacServiceProvider(container.Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
