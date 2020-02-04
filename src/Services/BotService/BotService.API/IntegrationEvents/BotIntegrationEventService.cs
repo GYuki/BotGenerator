@@ -8,6 +8,7 @@ using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF.Utilities
 using Microsoft.Extensions.Logging;
 using BotService.API;
 using BotService.API.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BotService.API.IntegrationEvents
@@ -31,6 +32,7 @@ namespace BotService.API.IntegrationEvents
             _botContext = botContext ?? throw new ArgumentNullException(nameof(botContext));
             _integrationEventLogServiceFactory = integrationEventLogServiceFactory ?? throw new ArgumentNullException(nameof(integrationEventLogServiceFactory));
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
+            _eventLogService = _integrationEventLogServiceFactory(_botContext.Database.GetDbConnection());
         }
 
         public async Task PublishThroughEventBusAsync(IntegrationEvent evt)

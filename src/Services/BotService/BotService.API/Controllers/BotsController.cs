@@ -19,9 +19,10 @@ namespace BotService.API.Controllers
         private readonly IBotRepository _botRepository;
         private readonly IBotIntegrationEventService _botIntegrationEventService;
 
-        public BotsController(IBotRepository botRepository)
+        public BotsController(IBotRepository botRepository, IBotIntegrationEventService botIntegrationEventService)
         {
             _botRepository = botRepository;
+            _botIntegrationEventService = botIntegrationEventService;
         }
 
         [HttpGet]
