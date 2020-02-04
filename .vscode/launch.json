@@ -54,5 +54,11 @@
             "request": "attach",
             "processId": "${command:pickProcess}"
         }
+    ],
+    "compounds": [
+        {
+            "name": "Compound",
+            "configurations": [".NET Core Launch (web)", ".NET CORE Telegram Receiver Launch (web)"]
+        }
     ]
 }

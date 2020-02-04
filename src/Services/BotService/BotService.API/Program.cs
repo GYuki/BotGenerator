@@ -62,7 +62,7 @@ namespace BotService.API
         
         private static int GetDefinedPorts(IConfiguration config)
         {
-            var port = config.GetValue("PORT", 80);
+            var port = config.GetValue("PORT", 81);
             return port;
         }
     }
