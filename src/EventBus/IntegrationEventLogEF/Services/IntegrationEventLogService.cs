@@ -26,7 +26,8 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF.Servi
             _dbConnection = dbConnection ?? throw new ArgumentNullException(nameof(dbConnection));
             _integrationEventLogContext = new IntegrationEventLogContext(
                 new DbContextOptionsBuilder<IntegrationEventLogContext>()
-                    .UseSqlServer(_dbConnection)
+                    // .UseSqlServer(_dbConnection)
+                    .UseMySql(_dbConnection)
                     .Options);
 
             _eventTypes = Assembly.Load(Assembly.GetEntryAssembly().FullName)
@@ -50,13 +51,13 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF.Servi
             return new List<IntegrationEventLogEntry>();
         }
 
-        public Task SaveEventAsync(IntegrationEvent @event, IDbContextTransaction transaction)
+        public Task SaveEventAsync(IntegrationEvent @event, System.Guid guid)
         {
-            if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+            // if (transaction == null) throw new ArgumentNullException(nameof(transaction));
 
-            var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
+            var eventLogEntry = new IntegrationEventLogEntry(@event, guid);
 
-            _integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
+            // _integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
             _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
             return _integrationEventLogContext.SaveChangesAsync();
