@@ -6,7 +6,6 @@ using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Events;
 using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF.Services;
 using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF.Utilities;
 using Microsoft.Extensions.Logging;
-using BotService.API;
 using BotService.API.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,18 +51,11 @@ namespace BotService.API.IntegrationEvents
             }
         }
 
-        public async Task SaveEventAndBotContextChangesAsync(IntegrationEvent evt)
+        public async Task SaveEventAndBotContextChangesAsync(IntegrationEvent evt, Guid guid)
         {
             _logger.LogInformation("----- BotIntegrationEventService - Saving changes and integrationEvent: {IntegrationEventId}", evt.Id);
 
-            //Use of an EF Core resiliency strategy when using multiple DbContexts within an explicit BeginTransaction():
-            //See: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency            
-            await ResilientTransaction.New(_botContext).ExecuteAsync(async () =>
-            {
-                // Achieving atomicity between original bot database operation and the IntegrationEventLog thanks to a local transaction
-                await _botContext.SaveChangesAsync();
-                await _eventLogService.SaveEventAsync(evt, _botContext.Database.CurrentTransaction);
-            });
+            await _eventLogService.SaveEventAsync(evt, guid);
         }
     }
 }

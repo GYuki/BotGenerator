@@ -69,20 +69,22 @@ namespace BotService.API.Controllers
             var oldToken = currentBot.Token;
             var raiseTokenChangedEvent = oldToken != botToUpdate.Token;
 
-            currentBot = botToUpdate;
+            currentBot.Token = botToUpdate.Token;
 
             if (raiseTokenChangedEvent)
             {
                 var tokenChangedEvent = new TokenChangedIntegrationEvent(currentBot.Token, oldToken);
 
-                await _botIntegrationEventService.SaveEventAndBotContextChangesAsync(tokenChangedEvent);
+                await _botRepository.UpdateBotTokenAsync(currentBot);
+
+                await _botIntegrationEventService.SaveEventAndBotContextChangesAsync(tokenChangedEvent, Guid.NewGuid());
 
                 await _botIntegrationEventService.PublishThroughEventBusAsync(tokenChangedEvent);
             }
             else
                 await _botRepository.UpdateBotTokenAsync(currentBot);
 
-            return CreatedAtAction(nameof(BotByIdAsync), new { id = botToUpdate.Id }, null);
+            return CreatedAtAction(nameof(BotByIdAsync), new { id = currentBot.Id }, null);
         }
 
         [HttpDelete]
