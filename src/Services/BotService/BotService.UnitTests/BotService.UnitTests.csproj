@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BotService.API\BotService.API.csproj" />
+    <ProjectReference Include="..\..\..\EventBus\EventBus\EventBus.csproj" />
   </ItemGroup>
 
 </Project>

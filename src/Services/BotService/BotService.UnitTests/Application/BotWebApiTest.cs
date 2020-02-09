@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using BotService.API.IntegrationEvents;
+using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Events;
 
 
 namespace UnitTest.BotService.Application
@@ -19,6 +20,10 @@ namespace UnitTest.BotService.Application
         public BotWebApiTest()
         {
             _botRepositoryMock = new Mock<IBotRepository>();
+            _botEventServiceMock = new Mock<IBotIntegrationEventService>();
+
+            _botEventServiceMock.Setup(x => x.PublishThroughEventBusAsync(It.IsAny<IntegrationEvent>()));
+            _botEventServiceMock.Setup(x => x.SaveEventAndBotContextChangesAsync(It.IsAny<IntegrationEvent>(), It.IsAny<System.Guid>()));
         }
 
         [Test]
