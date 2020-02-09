@@ -28,7 +28,7 @@ namespace TelegramReceiver.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Accepted)]
         public async Task<ActionResult> HandleMessageAsync(string botToken, [FromBody]Update update)
         {
-            ObjectResult resultCode = null;
+            ActionResult resultCode = null;
             string msg = "";
             var messageObject = new SendMessage()
             {
@@ -54,10 +54,11 @@ namespace TelegramReceiver.API.Controllers
                     msg = "No commands found";
 
                 messageObject.Text = msg;
+                resultCode = Ok();
             }
             
             await _telegramService.SendMessageToBotAsync(botToken, messageObject);
-            return Ok();
+            return resultCode;
         }
     }
 }
