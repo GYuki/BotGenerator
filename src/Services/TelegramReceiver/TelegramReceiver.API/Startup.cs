@@ -46,7 +46,7 @@ namespace TelegramReceiver.API
             services.AddControllers();
             services.AddMvc().AddNewtonsoftJson();
 
-            services.AddApplicationInsightsTelemetry();
+            // services.AddApplicationInsightsTelemetry();
 
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
