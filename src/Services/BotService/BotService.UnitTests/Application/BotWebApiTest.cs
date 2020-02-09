@@ -5,6 +5,7 @@ using BotService.API.Controllers;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using BotService.API.IntegrationEvents;
 
 
 namespace UnitTest.BotService.Application
@@ -13,6 +14,7 @@ namespace UnitTest.BotService.Application
     public class BotWebApiTest
     {
         private readonly Mock<IBotRepository> _botRepositoryMock;
+        private readonly Mock<IBotIntegrationEventService> _botEventServiceMock;
 
         public BotWebApiTest()
         {
@@ -33,7 +35,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.BotByIdAsync(fakeBotId);
@@ -57,7 +60,8 @@ namespace UnitTest.BotService.Application
                 .Returns(Task.FromResult((Bot)null));
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.CreateBotAsync(fakeBot) as OkResult;
@@ -80,7 +84,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.BotsOfOwnerAsync(fakeBot.OwnerId);
@@ -104,7 +109,8 @@ namespace UnitTest.BotService.Application
 
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             await botController.CreateBotAsync(fakeBot);
@@ -125,7 +131,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.BotsOfOwnerAsync(fakeUserId);
@@ -145,7 +152,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
             
             var actionResult = (await botController.BotByIdAsync(fakeBotId)).Result as BadRequestResult;
@@ -165,7 +173,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = (await botController.BotByIdAsync(fakeBotId)).Result as NotFoundResult;
@@ -184,7 +193,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = (await botController.BotsOfOwnerAsync(fakeOwnerId)).Result as BadRequestResult;
@@ -203,7 +213,8 @@ namespace UnitTest.BotService.Application
             
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.DeleteBotAsync(fakeBotId) as BadRequestResult;
@@ -222,7 +233,8 @@ namespace UnitTest.BotService.Application
 
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.DeleteBotAsync(fakeBotId) as NotFoundResult;
@@ -241,7 +253,8 @@ namespace UnitTest.BotService.Application
 
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.CreateBotAsync(fakeBot) as BadRequestResult;
@@ -263,7 +276,8 @@ namespace UnitTest.BotService.Application
 
             // Act
             var botController = new BotsController(
-                _botRepositoryMock.Object
+                _botRepositoryMock.Object,
+                _botEventServiceMock.Object
             );
 
             var actionResult = await botController.CreateBotAsync(fakeBot) as ConflictResult;
