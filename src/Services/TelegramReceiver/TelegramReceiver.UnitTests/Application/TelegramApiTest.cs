@@ -30,7 +30,7 @@ namespace UnitTest.TelegramReceiver.Application
             var fakeUpdateId = 1;
             var fakeUpdate = GetUpdateFake(fakeUpdateId);
 
-            _telegramServiceMock.Setup(x => x.GenerateResponseTextAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _telegramServiceMock.Setup(x => x.GenerateResponseTextAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(mockCommandResult));
             
             _telegramServiceMock.Setup(x => x.SendMessageToBotAsync(It.IsAny<string>(), It.IsAny<SendMessage>(), It.IsAny<CancellationToken>()));
@@ -64,7 +64,7 @@ namespace UnitTest.TelegramReceiver.Application
             var fakeUpdateId = 1;
             var fakeUpdate = GetUpdateFake(fakeUpdateId, fakeEntities);
 
-            _telegramServiceMock.Setup(x => x.GenerateResponseTextAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _telegramServiceMock.Setup(x => x.GenerateResponseTextAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(mockCommandResult));
             
             _telegramServiceMock.Setup(x => x.SendMessageToBotAsync(It.IsAny<string>(), It.IsAny<SendMessage>(), It.IsAny<CancellationToken>()));
