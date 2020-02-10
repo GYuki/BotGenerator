@@ -15,7 +15,7 @@ namespace BotService.API.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<string>> GetSubscribersAsync(int botId)
+        public async Task<List<int>> GetSubscribersAsync(int botId)
         {
             var chats = await _context.Subscribes
                                 .Where(s => s.BotId == botId)
@@ -25,7 +25,40 @@ namespace BotService.API.Infrastructure.Repositories
             return chats;
         }
 
-        public async Task<bool> DeleteSubscriptionAsync(string botName, string chatId)
+        public async Task<List<int>> GetSubscribersAsync(string botToken)
+        {
+            var chats = await _context.Subscribes
+                                .Where(s => s.Bot.Token == botToken)
+                                .Select(s => s.ChatId)
+                                .ToListAsync();
+            
+            return chats;
+        }
+
+        public async Task<bool> CreateSubscriptionIfNotExistsAsync(string botToken, int chatId)
+        {
+            var chat = await _context.Subscribes
+                               .SingleOrDefaultAsync(s => s.Bot.Token == botToken && s.ChatId == chatId);
+            
+            if (chat != null)
+                return false;
+            
+            var bot = await _context.Bots.SingleOrDefaultAsync(b => b.Token == botToken);
+
+            var subscription = new Subscribe
+            {
+                BotId = bot.Id,
+                ChatId = chatId
+            };
+
+            _context.Subscribes.Add(subscription);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteSubscriptionAsync(string botName, int chatId)
         {
             var subscribe = await _context.Subscribes.SingleOrDefaultAsync(s => s.Bot.Name == botName && s.ChatId == chatId);
             

@@ -5,8 +5,10 @@ namespace BotService.API.Model
 {
     public interface ISubscribeRepository
     {
-        Task<List<string>> GetSubscribersAsync(int botId);
-        Task<bool> DeleteSubscriptionAsync(string botName, string chatId);
+        Task<List<int>> GetSubscribersAsync(int botId);
+        Task<List<int>> GetSubscribersAsync(string botToken);
+        Task<bool> CreateSubscriptionIfNotExistsAsync(string botToken, int chatId);
+        Task<bool> DeleteSubscriptionAsync(string botName, int chatId);
         Task SubscribeAsync(Subscribe subscribe);
     }
 }
