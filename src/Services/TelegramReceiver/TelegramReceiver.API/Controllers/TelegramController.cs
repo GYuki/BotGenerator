@@ -48,7 +48,7 @@ namespace TelegramReceiver.API.Controllers
                     update.Message.Entities[0].Offset,
                     update.Message.Entities[0].Length
                 );
-                msg = await _telegramService.GenerateResponseTextAsync(command, botToken);
+                msg = await _telegramService.GenerateResponseTextAsync(command, botToken, update.Message.Chat.Id);
 
                 if (string.IsNullOrEmpty(msg))
                     msg = "No commands found";

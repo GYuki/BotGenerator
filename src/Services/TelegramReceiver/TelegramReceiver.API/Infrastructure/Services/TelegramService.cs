@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TelegramReceiver.API.Models;
 using TelegramReceiver.API.Infrastructure.Repositories;
+using TelegramReceiver.API.IntegrationEvents;
+using TelegramReceiver.API.IntegrationEvents.Events;
 using Newtonsoft.Json;
 
 
@@ -15,12 +17,15 @@ namespace TelegramReceiver.API.Infrastructure.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ICommandRepository _commandRepository;
+        private readonly ITelegramIntegrationEventService _telegramIntegrationEventService;
         private const string BASE_URL = "https://api.telegram.org/bot";
         
 
-        public TelegramService(ICommandRepository commandRepository)
+        public TelegramService(ICommandRepository commandRepository, ITelegramIntegrationEventService telegramIntegrationEventService)
         {
             _commandRepository = commandRepository;
+            _telegramIntegrationEventService = telegramIntegrationEventService;
+
             _httpClient = new HttpClient();
             _httpClient.Timeout = TimeSpan.FromSeconds(5);
         }
@@ -50,7 +55,7 @@ namespace TelegramReceiver.API.Infrastructure.Services
             }
         }
 
-        public async Task<string> GenerateResponseTextAsync(string command, string botToken)
+        public async Task<string> GenerateResponseTextAsync(string command, string botToken, int chatId)
         {
             string result = "";
             if (command == "/help")
@@ -61,6 +66,14 @@ namespace TelegramReceiver.API.Infrastructure.Services
                 foreach (Command cmd in botCommands)
                     sb.Append($"{cmd.Request} - {cmd.Description}\n");
                 result = sb.ToString();
+            }
+            else if (command == "/start")
+            {
+                var subscribeEvent = new SubscribeIntegrationEvent(botToken, chatId);
+
+                await _telegramIntegrationEventService.SaveEventAsync(subscribeEvent, Guid.NewGuid());
+
+                await _telegramIntegrationEventService.PublishThroughEventBusAsync(subscribeEvent);
             }
             else
             {
