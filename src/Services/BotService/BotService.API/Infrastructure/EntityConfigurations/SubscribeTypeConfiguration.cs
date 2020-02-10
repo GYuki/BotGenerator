@@ -19,8 +19,7 @@ namespace BotService.API.Infrastructure.EntityConfigurations
                    .IsUnique(true);
 
             builder.Property(u => u.ChatId)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace UnitTest.BotService.Application
         {
             // Arrange
             var fakeSubId = 1;
-            var fakeChatId = "123";
+            var fakeChatId = 1;
             var fakeSub = GetSubscribeFake(fakeSubId, fakeChatId);
             List<Subscribe> fakeSubscribes = new List<Subscribe>()
             {
@@ -43,7 +43,7 @@ namespace UnitTest.BotService.Application
 
             // Assert
             Assert.AreEqual((actionResult.Result as OkObjectResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
-            Assert.AreEqual((((ObjectResult)actionResult.Result).Value as List<string>), fakeSubscribes.Select(x => x.ChatId).ToList());
+            Assert.AreEqual((((ObjectResult)actionResult.Result).Value as List<int>), fakeSubscribes.Select(x => x.ChatId).ToList());
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace UnitTest.BotService.Application
             var fakeBotId = 1;
 
             _subscribeRepositoryMock.Setup(x => x.GetSubscribersAsync(It.IsAny<int>()))
-                .Returns(Task.FromResult(new List<string>()));
+                .Returns(Task.FromResult(new List<int>()));
             // Act
             var subController = new SubscribesController(
                 _subscribeRepositoryMock.Object
@@ -63,7 +63,7 @@ namespace UnitTest.BotService.Application
             
             // Assert
             Assert.AreEqual((actionResult.Result as OkObjectResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
-            Assert.IsEmpty(((ObjectResult)actionResult.Result).Value as List<string>);
+            Assert.IsEmpty(((ObjectResult)actionResult.Result).Value as List<int>);
         }
 
         [Test]
@@ -93,9 +93,9 @@ namespace UnitTest.BotService.Application
         {
             // Arrange
             var fakeBotName = "name";
-            var fakeChatId = "chat";
+            var fakeChatId = 1;
 
-            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(true));
             // Act
             var subController = new SubscribesController(
@@ -113,9 +113,9 @@ namespace UnitTest.BotService.Application
         {
             // Arrange
             var fakeBotName = "name";
-            var fakeChatId = "chat";
+            var fakeChatId = 1;
 
-            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(false));
             
             // Act
@@ -134,7 +134,7 @@ namespace UnitTest.BotService.Application
         {
             // Arrange
             var fakeSubId = 1;
-            var fakeChatId = "123";
+            var fakeChatId = 1;
             var fakeSub = GetSubscribeFake(fakeSubId, fakeChatId);
 
             _subscribeRepositoryMock.Setup(x => x.SubscribeAsync(It.IsAny<Subscribe>()));
@@ -170,26 +170,23 @@ namespace UnitTest.BotService.Application
         }
 
         [Test]
-        public async Task Delete_With_Null_Or_Empty_Chat_Id_Should_Return_Bad_Request()
+        public async Task Delete_With_Zero_Chat_Id_Should_Return_Bad_Request()
         {
             // Arrange
             var fakeBotName = "name";
-            var fakeChatIdEmpty = string.Empty;
-            string fakeChatIdNull = null;
+            var fakeChatId = 0;
             
-            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<string>()));
+            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<int>()));
 
             // Act
             var subController = new SubscribesController(
                 _subscribeRepositoryMock.Object
             );
 
-            var actionResultEmpty = await subController.DeleteSubscribeAsync(fakeBotName, fakeChatIdEmpty) as BadRequestResult;
-            var actionResultNull = await subController.DeleteSubscribeAsync(fakeBotName, fakeChatIdNull) as BadRequestResult;
+            var actionResultEmpty = await subController.DeleteSubscribeAsync(fakeBotName, fakeChatId) as BadRequestResult;
 
             // Assert
             Assert.NotNull(actionResultEmpty);
-            Assert.NotNull(actionResultNull);
         }
 
         [Test]
@@ -198,9 +195,9 @@ namespace UnitTest.BotService.Application
             // Arrange
             var fakeBotNameEmpty = string.Empty;
             string fakeBotNameNull = null;
-            var fakeChatId = "123";
+            var fakeChatId = 123;
             
-            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<string>()));
+            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<int>()));
 
             // Act
             var subController = new SubscribesController(
@@ -215,30 +212,7 @@ namespace UnitTest.BotService.Application
             Assert.NotNull(actionResultNull);
         }
 
-        [Test]
-        public async Task Delete_With_Null_Or_Empty_Bot_Name_And_Chat_Id_Should_Return_Bad_Request()
-        {
-            var fakeBotNameEmpty = string.Empty;
-            string fakeBotNameNull = null;
-            var fakeChatIdEmpty = string.Empty;
-            string fakeChatIdNull = null;
-
-            _subscribeRepositoryMock.Setup(x => x.DeleteSubscriptionAsync(It.IsAny<string>(), It.IsAny<string>()));
-
-            // Act
-            var subController = new SubscribesController(
-                _subscribeRepositoryMock.Object
-            );
-
-            var actionResultEmpty = await subController.DeleteSubscribeAsync(fakeBotNameEmpty, fakeChatIdEmpty) as BadRequestResult;
-            var actionResultNull = await subController.DeleteSubscribeAsync(fakeBotNameNull, fakeChatIdNull) as BadRequestResult;
-
-            // Assert
-            Assert.NotNull(actionResultEmpty);
-            Assert.NotNull(actionResultNull);
-        }
-
-        private Subscribe GetSubscribeFake(int fakeId, string fakeChatId)
+        private Subscribe GetSubscribeFake(int fakeId, int fakeChatId)
         {
             var fakeBotId = 1;
             Bot botFake = GetBotFake(fakeBotId);

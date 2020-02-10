@@ -38,9 +38,9 @@ namespace BotService.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> DeleteSubscribeAsync(string botName, string chatId)
+        public async Task<ActionResult> DeleteSubscribeAsync(string botName, int chatId)
         {
-            if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(chatId))
+            if (string.IsNullOrEmpty(botName) || chatId <= 0)
                 return BadRequest();
             
             var deleteResult = await _subscribeRepository.DeleteSubscriptionAsync(botName, chatId);
