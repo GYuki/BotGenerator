@@ -1,3 +1,4 @@
+using Autofac.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Net;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
+using TelegramReceiver.API.Extensions;
+using Microsoft.eShopOnContainers.BuildingBlocks.IntegrationEventLogEF;
 using Microsoft.Extensions.Logging;
 
 namespace TelegramReceiver.API
@@ -18,14 +21,23 @@ namespace TelegramReceiver.API
     {
         public static readonly string Namespace = typeof(Program).Namespace;
         public static readonly string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1);
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
             var configuration = GetConfiguration();
 
-            // CreateHostBuilder(args).Build().Run();
-            var host = BuildWebHost(configuration, args);
+            var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webHostBuilder => {
+                    webHostBuilder
+                        .UseContentRoot(Directory.GetCurrentDirectory())
+                        .UseIISIntegration()
+                        .UseStartup<Startup>();
+                })
+            .Build();
+
+            host.MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
+
             host.Run();
-            return 0;
         }
 
         private static IWebHost BuildWebHost(IConfiguration configuration, string[] args) =>
