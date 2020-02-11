@@ -74,6 +74,8 @@ namespace TelegramReceiver.API.Infrastructure.Services
                 await _telegramIntegrationEventService.SaveEventAsync(subscribeEvent, Guid.NewGuid());
 
                 await _telegramIntegrationEventService.PublishThroughEventBusAsync(subscribeEvent);
+
+                result = "Hello!";
             }
             else
             {
