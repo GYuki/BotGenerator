@@ -25,6 +25,8 @@ using Microsoft.EntityFrameworkCore;
 using BotService.API.Infrastructure;
 using BotService.API.IntegrationEvents;
 using BotService.API.Infrastructure.Repositories;
+using BotService.API.IntegrationEvents.Events;
+using BotService.API.IntegrationEvents.EventHandling;
 using BotService.API.Model;
 using RabbitMQ.Client;
 
@@ -40,7 +42,7 @@ namespace BotService.API
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
             .AddEnvironmentVariables();
-        this.Configuration = builder.Build();
+            this.Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -92,6 +94,8 @@ namespace BotService.API
             {
                 endpoints.MapDefaultControllerRoute();
             });
+
+            ConfigureEventBus(app);
         }
 
         private void AddEventIntegrationServices(IServiceCollection services)
@@ -132,6 +136,13 @@ namespace BotService.API
             });
         }
 
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+            eventBus.Subscribe<SubscribeIntegrationEvent, SubscribeIntegrationEventHandler>();
+        }
+
         private void RegisterEventBus(IServiceCollection services)
         {
             var subscriptionClientName = Configuration["SubscriptionClientName"];
@@ -153,6 +164,8 @@ namespace BotService.API
             });
 
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+
+            services.AddTransient<SubscribeIntegrationEventHandler>();
         }
     }
 }
