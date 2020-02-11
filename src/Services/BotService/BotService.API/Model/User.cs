@@ -8,6 +8,5 @@ namespace BotService.API.Model
         public string SenderId{ get; set; }
 
         public ICollection<Bot> Bots { get; set; }
-        public virtual ICollection<Subscribe> Subscribes { get; set; }
     }
 }
