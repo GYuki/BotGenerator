@@ -45,6 +45,9 @@ namespace BotService.API.Infrastructure.Repositories
             
             var bot = await _context.Bots.SingleOrDefaultAsync(b => b.Token == botToken);
 
+            if (bot is null)
+                return false;
+
             var subscription = new Subscribe
             {
                 BotId = bot.Id,
