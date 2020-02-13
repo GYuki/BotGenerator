@@ -18,7 +18,6 @@ namespace BotService.API.Infrastructure.Repositories
         public async Task<Bot> GetBotAsync(int botId)
         {
             var bot = await _context.Bots
-                .Include(b => b.Owner)
                 .SingleOrDefaultAsync(b => b.Id == botId);
 
             return bot;
@@ -30,10 +29,9 @@ namespace BotService.API.Infrastructure.Repositories
 
         }
 
-        public async Task<List<Bot>> GetBotsOfOwnerAsync(int ownerId)
+        public async Task<List<Bot>> GetBotsOfOwnerAsync(string ownerId)
         {
             var bots = await _context.Bots.Where(b => b.OwnerId == ownerId)
-                .Include(b => b.Owner)
                 .ToListAsync();
 
             return bots;

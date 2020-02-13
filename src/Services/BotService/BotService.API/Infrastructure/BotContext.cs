@@ -11,11 +11,9 @@ namespace BotService.API.Infrastructure
         }
         public DbSet<Bot> Bots { get; set; }
         public DbSet<Subscribe> Subscribes { get; set; }
-        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new UserEntityTypeConfiguration());
             builder.ApplyConfiguration(new BotEntityTypeConfiguration());
             builder.ApplyConfiguration(new SubscribeEntityTypeConfiguration());
         }

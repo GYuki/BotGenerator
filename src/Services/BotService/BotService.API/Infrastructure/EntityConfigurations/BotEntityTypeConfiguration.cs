@@ -17,8 +17,9 @@ namespace BotService.API.Infrastructure.EntityConfigurations
             
             builder.HasIndex(b => b.Token)
                 .IsUnique(true);
-            builder.HasIndex(b => b.Name)
-                .IsUnique(true);
+            
+            builder.HasIndex(b => b.OwnerId)
+                .IsUnique(false);
 
             builder.Property(b => b.Token)
                 .IsRequired()
@@ -27,10 +28,6 @@ namespace BotService.API.Infrastructure.EntityConfigurations
             builder.Property(b => b.Name)
                 .IsRequired()
                 .HasMaxLength(100);
-            
-            builder.HasOne(b => b.Owner)
-                .WithMany(u => u.Bots)
-                .HasForeignKey(b => b.OwnerId);
         }
     }
 }

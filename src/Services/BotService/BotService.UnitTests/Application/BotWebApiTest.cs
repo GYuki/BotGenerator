@@ -84,8 +84,8 @@ namespace UnitTest.BotService.Application
             var fakeName = "name";
             var fakeBot = GetBotFake(fakeBotId, fakeToken, fakeName);
 
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<int>()))
-                .Returns(Task.FromResult((List<Bot>)fakeBot.Owner.Bots));
+            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult((List<Bot>)new List<Bot>{ fakeBot }));
             
             // Act
             var botController = new BotsController(
@@ -97,7 +97,7 @@ namespace UnitTest.BotService.Application
 
             // Assert
             Assert.AreEqual((actionResult.Result as OkObjectResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
-            Assert.AreEqual((((ObjectResult)actionResult.Result).Value as List<Bot>), fakeBot.Owner.Bots);
+            Assert.AreEqual((((ObjectResult)actionResult.Result).Value as List<Bot>), new List<Bot>{ fakeBot });
         }
 
         [Test]
@@ -129,9 +129,9 @@ namespace UnitTest.BotService.Application
         public async Task Get_Bots_For_User_With_No_Bots()
         {
             // Arrange
-            var fakeUserId = 1;
+            var fakeUserId = "owner";
             
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<int>()))
+            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(new List<Bot>()));
             
             // Act
@@ -189,12 +189,12 @@ namespace UnitTest.BotService.Application
         }
 
         [Test]
-        public async Task Get_Bots_Of_Owner_With_Zero_Owner_Should_Return_Bad_Request()
+        public async Task Get_Bots_Of_Owner_With_Null_Owner_Should_Return_Bad_Request()
         {
             // Arrange
-            var fakeOwnerId = 0;
+            string fakeOwnerId = null;
 
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<int>()));
+            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()));
             
             // Act
             var botController = new BotsController(
@@ -294,24 +294,14 @@ namespace UnitTest.BotService.Application
         private Bot GetBotFake(int fakeBotId, string fakeToken, string fakeName)
         {
             int fakeUserId = 1;
-            User fakeOwner = GetUserFake(fakeUserId);
+            string fakeOwnerId = "owner";
 
             return new Bot()
             {
                 Id = fakeBotId,
                 Name = fakeName,
                 Token = fakeToken,
-                Owner = fakeOwner,
-                OwnerId = fakeOwner.Id
-            };
-        }
-
-        private User GetUserFake(int fakeId)
-        {
-            return new User()
-            {
-                Id = fakeId,
-                Bots = new List<Bot>()
+                OwnerId = fakeOwnerId
             };
         }
     }

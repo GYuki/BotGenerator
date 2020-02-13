@@ -64,7 +64,6 @@ namespace BotService.API
                 });
             });
             
-            services.AddTransient<IUserRepository, SqlUserRepository>();
             services.AddTransient<IBotRepository, SqlBotRepository>();
             services.AddTransient<ISubscribeRepository, SqlSubscribeRepository>();
             services.AddControllers();

@@ -47,9 +47,9 @@ namespace BotService.API.Controllers
         [Route("ofowner/{ownerid}")]
         [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(int ownerId)
+        public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(string ownerId)
         {
-            if (ownerId <= 0)
+            if (string.IsNullOrEmpty(ownerId))
                 return BadRequest();
 
             var result = await _botRepository.GetBotsOfOwnerAsync(ownerId);
