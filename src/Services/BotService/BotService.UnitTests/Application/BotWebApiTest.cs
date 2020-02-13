@@ -293,7 +293,6 @@ namespace UnitTest.BotService.Application
 
         private Bot GetBotFake(int fakeBotId, string fakeToken, string fakeName)
         {
-            int fakeUserId = 1;
             string fakeOwnerId = "owner";
 
             return new Bot()
