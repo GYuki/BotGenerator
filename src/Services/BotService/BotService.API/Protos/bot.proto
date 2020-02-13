@@ -5,13 +5,25 @@ option csharp_namespace = "GrpcBot";
 package BotApi;
 
 service Bot {
-  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc GetBotById (BotRequest) returns (BotResponse) {}
+  rpc CreateBot (MakeBotRequest) returns (Empty) {}
 }
 
-message HelloRequest {
-  string name = 1;
+message BotRequest {
+  int32 id = 1;
 }
 
-message HelloReply {
-  string message = 1;
+message MakeBotRequest {
+  BotResponse bot = 1;
+}
+
+message BotResponse {
+  int32 id = 1;
+  string token = 2;
+  string name = 3;
+  string ownerid = 4;
+}
+
+message Empty{
+
 }
