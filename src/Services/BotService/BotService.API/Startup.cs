@@ -101,7 +101,7 @@ namespace BotService.API
                 endpoints.MapGet("/_proto/", async ctx => 
                 {
                     ctx.Response.ContentType = "text/plain";
-                    using var fs = new FileStream(Path.Combine(env.ContentRootPath, "Proto", "bot.proto"), FileMode.Open, FileAccess.Read);
+                    using var fs = new FileStream(Path.Combine(env.ContentRootPath, "Protos", "bot.proto"), FileMode.Open, FileAccess.Read);
                     using var sr = new StreamReader(fs);
                     while(!sr.EndOfStream)
                     {
