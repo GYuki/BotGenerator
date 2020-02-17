@@ -1,11 +1,13 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Common;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
@@ -94,7 +96,22 @@ namespace BotService.API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcService<GrpcBot.BotService>();
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapGet("/_proto/", async ctx => 
+                {
+                    ctx.Response.ContentType = "text/plain";
+                    using var fs = new FileStream(Path.Combine(env.ContentRootPath, "Proto", "bot.proto"), FileMode.Open, FileAccess.Read);
+                    using var sr = new StreamReader(fs);
+                    while(!sr.EndOfStream)
+                    {
+                        var line = await sr.ReadLineAsync();
+                        if (line != "/* >>" || line != "<< */")
+                        {
+                            await ctx.Response.WriteAsync(line);
+                        }
+                    }
+                });
             });
 
             ConfigureEventBus(app);
