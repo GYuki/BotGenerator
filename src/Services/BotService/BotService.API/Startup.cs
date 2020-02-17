@@ -3,9 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Data.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ;
 using Microsoft.eShopOnContainers.BuildingBlocks.EventBus;
 using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Abstractions;
@@ -52,6 +50,18 @@ namespace BotService.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<KestrelServerOptions>(options => {
+                var ports = GetDefinedPorts(Configuration);
+                options.Listen(IPAddress.Any, ports.httpPort, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                });
+
+                options.Listen(IPAddress.Any, ports.grpcPort, listenOptions =>{
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                });
+            });
+
             services.AddGrpc(options => 
             {
                 options.EnableDetailedErrors = true;
@@ -185,6 +195,13 @@ namespace BotService.API
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
 
             services.AddTransient<SubscribeIntegrationEventHandler>();
+        }
+
+        private static (int httpPort, int grpcPort) GetDefinedPorts(IConfiguration config)
+        {
+            var port = config.GetValue("PORT", 80);
+            var grpcPort = config.GetValue("GRPC_PORT", 5001);
+            return (port, grpcPort);
         }
     }
 }
