@@ -5,11 +5,16 @@ option csharp_namespace = "GrpcTelegram";
 package TelegramApi;
 
 service Telegram {
-    rpc HandleMessage (Update) returns (Empty) {}
+    rpc HandleMessage (MessageRequest) returns (MessageResponse) {}
 }
 
-message Empty {
+message MessageRequest {
+    string botToken = 1;
+    Update update = 2;
+}
 
+message MessageResponse {
+    int32 responseCode = 1;
 }
 
 message User {
