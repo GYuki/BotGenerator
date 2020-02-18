@@ -1,15 +1,14 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using System;
-using System.Data.Common;
+using System.Net;
+using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,8 +47,23 @@ namespace TelegramReceiver.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddDbContext<TelegramContext>(opt =>
-            //     opt.UseInMemoryDatabase("TelegramReceiver"));
+            services.Configure<KestrelServerOptions>(options => {
+                var ports = GetDefinedPorts(Configuration);
+                options.Listen(IPAddress.Any, ports.httpPort, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                });
+
+                options.Listen(IPAddress.Any, ports.grpcPort, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                });
+            });
+
+            services.AddGrpc(options => 
+            {
+                options.EnableDetailedErrors = true;
+            });
 
             services.AddDbContext<TelegramContext>(opt =>
                 opt.UseMySql(Configuration.GetConnectionString("localConnection")));
@@ -88,7 +102,22 @@ namespace TelegramReceiver.API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcService<GrpcTelegram.TelegramService>();
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapGet("/_proto/", async ctx => 
+                {
+                    ctx.Response.ContentType = "text/plain";
+                    using var fs = new FileStream(Path.Combine(env.ContentRootPath, "Protos", "telegram.proto"), FileMode.Open, FileAccess.Read);
+                    using var sr = new StreamReader(fs);
+                    while(!sr.EndOfStream)
+                    {
+                        var line = await sr.ReadLineAsync();
+                        if (line != "/* >>" || line != "<< */")
+                        {
+                            await ctx.Response.WriteAsync(line);
+                        }
+                    }
+                });
             });
 
             ConfigureEventBus(app);
@@ -163,6 +192,13 @@ namespace TelegramReceiver.API
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
 
             services.AddTransient<TokenChangedIntegrationEventHandler>();
+        }
+
+        private static (int httpPort, int grpcPort) GetDefinedPorts(IConfiguration config)
+        {
+            var port = config.GetValue("PORT", 80);
+            var grpcPort = config.GetValue("GRPC_PORT", 5001);
+            return (port, grpcPort);
         }
     }
 }
