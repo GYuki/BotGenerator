@@ -38,6 +38,7 @@ namespace BotService.API
                 .Build();
             
             host.MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
+            host.MigrateDbContext<BotService.API.Infrastructure.BotContext>((_, __) => { });
 
             host.Run();
 
