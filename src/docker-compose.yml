@@ -22,6 +22,9 @@ services:
     build:
       context: .
       dockerfile: Services/BotService/BotService.API/Dockerfile
+    ports:
+      - "80:80"
+      - "5001:5001"
     depends_on:
       - rabbitmq
       - mysqldata
