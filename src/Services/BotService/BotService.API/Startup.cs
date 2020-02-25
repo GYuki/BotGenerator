@@ -92,6 +92,7 @@ namespace BotService.API
             
             AddEventIntegrationServices(services);
             RegisterEventBus(services);
+            AddCustomHealthCheck(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -167,6 +168,20 @@ namespace BotService.API
 
                 return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
             });
+        }
+
+        private void AddCustomHealthCheck(IServiceCollection services)
+        {
+            var hcBuilder = services.AddHealthChecks();
+
+            hcBuilder
+                .AddSqlServer(Configuration.GetConnectionString("localConnection"));
+
+            hcBuilder
+                .AddRabbitMQ(
+                    $"amqp://{Configuration["EventBusConnection"]}",
+                        name: "catalog-rabbitmqbus-check",
+                        tags: new string[] { "rabbitmqbus" });
         }
 
         private void ConfigureEventBus(IApplicationBuilder app)
