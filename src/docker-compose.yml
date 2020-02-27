@@ -29,6 +29,17 @@ services:
       - rabbitmq
       - mysqldata
   
+  telegram-api:
+    build:
+      context: .
+      dockerfile: Services/TelegramReceiver/TelegramReceiver.API/Dockerfile
+    ports:
+      - "81:80"
+      - "5101:5001"
+    depends_on:
+      - rabbitmq
+      - mysqldata
+  
 volumes:
   botgenerator:
     external: false
