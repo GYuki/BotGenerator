@@ -66,7 +66,11 @@ namespace TelegramReceiver.API
             });
 
             services.AddDbContext<TelegramContext>(opt =>
-                opt.UseMySql(Configuration.GetConnectionString("localConnection")));
+                opt.UseMySql(Configuration.GetConnectionString("localConnection"), mySqlOptionsAction: sqlOpt =>
+                {
+                    sqlOpt.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                    sqlOpt.EnableRetryOnFailure(maxRetryCount: 15, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                }));
 
             services.AddDbContext<IntegrationEventLogContext>(opt => 
             {

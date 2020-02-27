@@ -35,6 +35,7 @@ namespace TelegramReceiver.API
                 })
             .Build();
 
+            host.MigrateDbContext<TelegramReceiver.API.Infrastructure.TelegramContext>((_, __) => { });
             host.MigrateDbContext<IntegrationEventLogContext>((_, __) => { });
 
             host.Run();
