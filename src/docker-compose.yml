@@ -21,9 +21,11 @@ services:
   nginxapigw:
     image: nginx
     volumes:
-      - ./ApiGateways/nginx:/etc/nginx/conf.d/
+      - ./ApiGateways/nginx/configs:/etc/nginx/conf.d/
+      - ./ApiGateways/nginx/ssl:/etc/nginx/ssl
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - botservice-api
       - telegram-api
