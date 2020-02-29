@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcTelegram";
+
+package TelegramApi;
+
+service Telegram {
+    rpc HandleMessage (MessageRequest) returns (MessageResponse) {}
+}
+
+message MessageRequest {
+    string botToken = 1;
+    Update update = 2;
+}
+
+message MessageResponse {
+    int32 responseCode = 1;
+}
+
+message User {
+    int32 id = 1;
+    bool isBot = 2;
+    string fisrtName = 3;
+    string lastName = 4;
+    string username = 5;
+    string languageCode = 6;
+}
+
+message Chat {
+    int32 id = 1;
+    string type = 2;
+    string title = 3;
+    string username = 4;
+}
+
+message MessageEntity {
+    string type = 1;
+    int32 offset = 2;
+    int32 length = 3;
+    string url = 4;
+    User user = 5;
+}
+
+message Message {
+    int32 messageId = 1;
+    User from = 2;
+    int32 date = 3;
+    Chat chat = 4;
+    User forwardFrom = 5;
+    string text = 6;
+    repeated MessageEntity entities = 7;
+    repeated MessageEntity captionEntities = 8;
+}
+
+message Update {
+    int32 id = 1;
+    Message message = 2;
+}

@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  mysqldata:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: "0.0.0.0"
+    ports:
+      - "3306:3306"
+    volumes:
+      - botgenerator:/c/ProgramData/MySQL/MySQL\ Server 8.0/Data
+  
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+  
+  nginxapigw:
+    image: nginx
+    volumes:
+      - ./ApiGateways/nginx/configs:/etc/nginx/conf.d/
+      - ./ApiGateways/nginx/ssl:/etc/nginx/ssl
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - botservice-api
+      - telegram-api
+  
+  botservice-api:
+    build:
+      context: .
+      dockerfile: Services/BotService/BotService.API/Dockerfile
+    depends_on:
+      - rabbitmq
+      - mysqldata
+  
+  telegram-api:
+    build:
+      context: .
+      dockerfile: Services/TelegramReceiver/TelegramReceiver.API/Dockerfile
+    depends_on:
+      - rabbitmq
+      - mysqldata
+  
+volumes:
+  botgenerator:
+    external: false

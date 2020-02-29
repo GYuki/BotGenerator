@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{1A16F922-1CEF-4267-B0A8-CA01CBC7FE84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BotService", "BotService", "{281619F7-17D9-42C7-9CBC-C26D1203E14F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotService.API", "Services\BotService\BotService.API\BotService.API.csproj", "{20150D75-B311-499E-A2B7-95EDA1E5A22B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TelegramReceiver", "TelegramReceiver", "{C6F2806F-A7CC-47E5-843B-3CC5E8C19D08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramReceiver.API", "Services\TelegramReceiver\TelegramReceiver.API\TelegramReceiver.API.csproj", "{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|x64.Build.0 = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Debug|x86.Build.0 = Debug|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|x64.ActiveCfg = Release|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|x64.Build.0 = Release|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|x86.ActiveCfg = Release|Any CPU
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B}.Release|x86.Build.0 = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|x64.Build.0 = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Debug|x86.Build.0 = Debug|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|x64.Build.0 = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|x86.ActiveCfg = Release|Any CPU
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{281619F7-17D9-42C7-9CBC-C26D1203E14F} = {1A16F922-1CEF-4267-B0A8-CA01CBC7FE84}
+		{20150D75-B311-499E-A2B7-95EDA1E5A22B} = {281619F7-17D9-42C7-9CBC-C26D1203E14F}
+		{C6F2806F-A7CC-47E5-843B-3CC5E8C19D08} = {1A16F922-1CEF-4267-B0A8-CA01CBC7FE84}
+		{E14D75ED-76C1-4D5B-B048-8FBD72FBA6CB} = {C6F2806F-A7CC-47E5-843B-3CC5E8C19D08}
+	EndGlobalSection
+EndGlobal

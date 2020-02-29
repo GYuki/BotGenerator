@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcBot";
+
+package BotApi;
+
+service Bot {
+  rpc GetBotById (BotRequest) returns (BotResponse) {}
+  rpc CreateBot (MakeBotRequest) returns (Empty) {}
+}
+
+message BotRequest {
+  int32 id = 1;
+}
+
+message MakeBotRequest {
+  BotResponse bot = 1;
+}
+
+message BotResponse {
+  int32 id = 1;
+  string token = 2;
+  string name = 3;
+}
+
+message Empty{
+
+}
