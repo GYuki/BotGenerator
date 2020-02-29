@@ -86,6 +86,17 @@ namespace BotService.API
             services.AddTransient<IBotRepository, SqlBotRepository>();
             services.AddTransient<ISubscribeRepository, SqlSubscribeRepository>();
             services.AddControllers();
+
+            services.AddSwaggerGen(options => 
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "BotService - Bot HTTP API",
+                    Version = "v1",
+                    Description = "Bot service HTTP API"
+                });
+            });
+
             services.AddMvc(opt => opt.EnableEndpointRouting = false)
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                     .AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -101,6 +112,13 @@ namespace BotService.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(setup => 
+                {
+                    setup.SwaggerEndpoint("/swagger/v1/swagger.json", "BotService.API V1");
+                    setup.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();
