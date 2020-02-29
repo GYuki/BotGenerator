@@ -84,6 +84,17 @@ namespace TelegramReceiver.API
             services.AddTransient<ICommandRepository, SqlCommandRepository>();
             services.AddTransient<ITelegramService, TelegramService>();
             services.AddControllers();
+
+            services.AddSwaggerGen(options => 
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "TelegramReceiver - Telegram HTTP API",
+                    Version = "v1",
+                    Description = "Telegram service HTTP API"
+                });
+            });
+
             services.AddMvc().AddNewtonsoftJson();
 
             AddEventIntegrationServices(services);
@@ -96,6 +107,13 @@ namespace TelegramReceiver.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(setup => 
+                {
+                    setup.SwaggerEndpoint("/swagger/v1/swagger.json", "TelegramReceiver.API V1");
+                    setup.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();
