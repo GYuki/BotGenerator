@@ -23,15 +23,15 @@ services:
     volumes:
       - ./ApiGateways/nginx:/etc/nginx/conf.d/
     ports:
-      - "8000:80"
+      - "80:80"
+    depends_on:
+      - botservice-api
+      - telegram-api
   
   botservice-api:
     build:
       context: .
       dockerfile: Services/BotService/BotService.API/Dockerfile
-    ports:
-      - "81:80"
-      - "5001:5001"
     depends_on:
       - rabbitmq
       - mysqldata
@@ -40,9 +40,6 @@ services:
     build:
       context: .
       dockerfile: Services/TelegramReceiver/TelegramReceiver.API/Dockerfile
-    ports:
-      - "82:80"
-      - "5101:5001"
     depends_on:
       - rabbitmq
       - mysqldata
