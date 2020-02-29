@@ -215,8 +215,7 @@ namespace UnitTest.BotService.Application
         private Subscribe GetSubscribeFake(int fakeId, int fakeChatId)
         {
             var fakeBotId = 1;
-            var fakeOwnerId = "owner";
-            Bot botFake = GetBotFake(fakeBotId, fakeOwnerId);
+            Bot botFake = GetBotFake(fakeBotId);
             return new Subscribe()
             {
                 Id = fakeId,
@@ -226,12 +225,11 @@ namespace UnitTest.BotService.Application
             };
         }
 
-        private Bot GetBotFake(int fakeBotId, string fakeOwnerId)
+        private Bot GetBotFake(int fakeBotId)
         {
             return new Bot()
             {
-                Id = fakeBotId,
-                OwnerId = fakeOwnerId
+                Id = fakeBotId
             };
         }
     }

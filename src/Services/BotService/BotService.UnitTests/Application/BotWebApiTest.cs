@@ -76,31 +76,6 @@ namespace UnitTest.BotService.Application
         }
 
         [Test]
-        public async Task Get_Bots_Of_Owner_Success()
-        {
-            // Arrange
-            var fakeBotId = 1;
-            var fakeToken = "token";
-            var fakeName = "name";
-            var fakeBot = GetBotFake(fakeBotId, fakeToken, fakeName);
-
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult((List<Bot>)new List<Bot>{ fakeBot }));
-            
-            // Act
-            var botController = new BotsController(
-                _botRepositoryMock.Object,
-                _botEventServiceMock.Object
-            );
-
-            var actionResult = await botController.BotsOfOwnerAsync(fakeBot.OwnerId);
-
-            // Assert
-            Assert.AreEqual((actionResult.Result as OkObjectResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
-            Assert.AreEqual((((ObjectResult)actionResult.Result).Value as List<Bot>), new List<Bot>{ fakeBot });
-        }
-
-        [Test]
         public async Task Delete_Bot_Success()
         {
             // Arrange
@@ -123,28 +98,6 @@ namespace UnitTest.BotService.Application
 
             // Assert
             Assert.NotNull(actionResult);
-        }
-
-        [Test]
-        public async Task Get_Bots_For_User_With_No_Bots()
-        {
-            // Arrange
-            var fakeUserId = "owner";
-            
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(new List<Bot>()));
-            
-            // Act
-            var botController = new BotsController(
-                _botRepositoryMock.Object,
-                _botEventServiceMock.Object
-            );
-
-            var actionResult = await botController.BotsOfOwnerAsync(fakeUserId);
-
-            // Assert
-            Assert.AreEqual((actionResult.Result as OkObjectResult).StatusCode, (int)System.Net.HttpStatusCode.OK);
-            Assert.IsEmpty(((ObjectResult)actionResult.Result).Value as List<Bot>);
         }
 
         [Test]
@@ -188,25 +141,6 @@ namespace UnitTest.BotService.Application
             Assert.NotNull(actionResult);
         }
 
-        [Test]
-        public async Task Get_Bots_Of_Owner_With_Null_Owner_Should_Return_Bad_Request()
-        {
-            // Arrange
-            string fakeOwnerId = null;
-
-            _botRepositoryMock.Setup(x => x.GetBotsOfOwnerAsync(It.IsAny<string>()));
-            
-            // Act
-            var botController = new BotsController(
-                _botRepositoryMock.Object,
-                _botEventServiceMock.Object
-            );
-
-            var actionResult = (await botController.BotsOfOwnerAsync(fakeOwnerId)).Result as BadRequestResult;
-
-            // Assert
-            Assert.NotNull(actionResult);
-        }
 
         [Test]
         public async Task Delete_Bot_With_Zero_Bot_Id_Should_Return_Bad_Request()
@@ -293,14 +227,12 @@ namespace UnitTest.BotService.Application
 
         private Bot GetBotFake(int fakeBotId, string fakeToken, string fakeName)
         {
-            string fakeOwnerId = "owner";
 
             return new Bot()
             {
                 Id = fakeBotId,
                 Name = fakeName,
-                Token = fakeToken,
-                OwnerId = fakeOwnerId
+                Token = fakeToken
             };
         }
     }

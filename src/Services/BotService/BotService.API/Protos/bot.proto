@@ -21,7 +21,6 @@ message BotResponse {
   int32 id = 1;
   string token = 2;
   string name = 3;
-  string ownerid = 4;
 }
 
 message Empty{
