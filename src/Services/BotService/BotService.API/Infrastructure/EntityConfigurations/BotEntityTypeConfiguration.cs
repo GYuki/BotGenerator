@@ -17,9 +17,6 @@ namespace BotService.API.Infrastructure.EntityConfigurations
             
             builder.HasIndex(b => b.Token)
                 .IsUnique(true);
-            
-            builder.HasIndex(b => b.OwnerId)
-                .IsUnique(false);
 
             builder.Property(b => b.Token)
                 .IsRequired()

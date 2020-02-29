@@ -53,7 +53,6 @@ namespace GrpcBot
             {
                 Id = bot.Id,
                 Name = bot.Name,
-                Ownerid = bot.OwnerId,
                 Token = bot.Token
             };
         }
@@ -64,7 +63,6 @@ namespace GrpcBot
             {
                 Id = request.Bot.Id,
                 Name = request.Bot.Name,
-                OwnerId = request.Bot.Ownerid,
                 Token = request.Bot.Token
             };
         }

@@ -43,19 +43,6 @@ namespace BotService.API.Controllers
             return NotFound();
         }
 
-        [HttpGet]
-        [Route("ofowner/{ownerid}")]
-        [ProducesResponseType(typeof(List<Bot>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<List<Bot>>> BotsOfOwnerAsync(string ownerId)
-        {
-            if (string.IsNullOrEmpty(ownerId))
-                return BadRequest();
-
-            var result = await _botRepository.GetBotsOfOwnerAsync(ownerId);
-            return Ok(result);
-        }
-
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Created)]

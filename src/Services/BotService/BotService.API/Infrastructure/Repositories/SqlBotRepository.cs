@@ -29,14 +29,6 @@ namespace BotService.API.Infrastructure.Repositories
 
         }
 
-        public async Task<List<Bot>> GetBotsOfOwnerAsync(string ownerId)
-        {
-            var bots = await _context.Bots.Where(b => b.OwnerId == ownerId)
-                .ToListAsync();
-
-            return bots;
-        }
-
         public async Task UpdateBotTokenAsync(Bot currentBot)
         {
             _context.Update(currentBot);
@@ -62,7 +54,6 @@ namespace BotService.API.Infrastructure.Repositories
         {
             var bot = new Bot
             {
-                OwnerId = _bot.OwnerId,
                 Token = _bot.Token,
                 Name = _bot.Name
             };
